@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Request
 import requests
 
-app = FastAPI()
+app = FastAPI(
+    title="Motion API",
+    description="API für die Verwaltung von Bildgenerierungslimits und Abonnements in Motion.",
+    version="1.0.0",
+)
 
 # Simulierte User-Datenbank für Limits und Abos
 user_data = {
@@ -21,6 +25,25 @@ def home():
     """Startseite der API"""
     return {"message": "Server läuft perfekt!"}
 
+@app.post("/check-limit")
+async def check_limit(request: Request):
+    """Überprüft das Bildlimit eines Nutzers"""
+    data = await request.json()
+    user_id = data.get("user_id")
+
+    if user_id not in user_data:
+        user_data[user_id] = {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder/Monat"}
+
+    user_info = user_data[user_id]
+
+    return {
+        "allowed": user_info["remaining_images"] > 0,
+        "remaining_images": user_info["remaining_images"],
+        "subscription_tier": user_info["subscription_tier"],
+        "message": "Du kannst noch {} Bilder generieren.".format(user_info["remaining_images"])
+        if user_info["remaining_images"] > 0 else "Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder."
+    }
+
 @app.post("/upgrade")
 async def handle_upgrade(request: Request):
     """Empfängt das Upgrade von Digistore24 über Zapier"""
@@ -36,16 +59,31 @@ async def handle_upgrade(request: Request):
     
     return {"status": "Payment not completed"}
 
-@app.post("/check-limit")
-async def check_limit():
-    """Überprüft das Bildlimit eines Nutzers"""
-    user_id = "user_123"
-    user_info = user_data.get(user_id, {"remaining_images": 0, "subscription_tier": "Kein Abo"})
+@app.post("/generate-image")
+async def generate_image(request: Request):
+    """Generiert ein Bild für den Nutzer"""
+    data = await request.json()
+    user_id = data.get("user_id")
+    prompt = data.get("prompt")
+
+    if user_id not in user_data:
+        return {"error": "User not found"}
+
+    if user_data[user_id]["remaining_images"] <= 0:
+        return {
+            "error": "Limit erreicht",
+            "message": "Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder.",
+            "upgrade_url": UPGRADE_URL
+        }
+
+    # Reduziere das Bildlimit um 1
+    user_data[user_id]["remaining_images"] -= 1
+
+    # Simulierte Bildgenerierung
+    image_url = f"https://fakeimageapi.com/generate/{prompt.replace(' ', '_')}.png"
 
     return {
-        "allowed": user_info["remaining_images"] > 0,
-        "remaining_images": user_info["remaining_images"],
-        "subscription_tier": user_info["subscription_tier"],
-        "message": "Du kannst noch {} Bilder generieren.".format(user_info["remaining_images"])
-        if user_info["remaining_images"] > 0 else "Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder."
+        "image_url": image_url,
+        "remaining_images": user_data[user_id]["remaining_images"],
+        "subscription_tier": user_data[user_id]["subscription_tier"]
     }
