@@ -1,16 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import requests
 
-app = FastAPI(
-    title="Motion API",
-    description="API für die Verwaltung von Bildgenerierungslimits und Abonnements in Motion.",
-    version="1.0.0",
-)
+app = FastAPI()
 
-# 📌 Simulierte User-Datenbank für Limits und Abos
+# Simulierte Datenbank für Nutzerlimits mit mehreren Abo-Stufen
 user_data = {
-    "user_123": {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder/Monat"}
+    "testuser123": {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder/Monat"}
 }
 
 subscription_limits = {
@@ -21,107 +17,71 @@ subscription_limits = {
 
 UPGRADE_URL = "https://www.checkout-ds24.com/product/599133"
 
-# 📌 ✅ Pydantic-Modelle für Request & Response
-class CheckLimitRequest(BaseModel):
+class UserRequest(BaseModel):
     user_id: str
 
-class CheckLimitResponse(BaseModel):
-    allowed: bool
-    remaining_images: int
-    subscription_tier: str
-    message: str
-
-class UpgradeRequest(BaseModel):
-    user_id: str
-    new_plan: str
-    payment_status: str
-
-class UpgradeResponse(BaseModel):
-    status: str
-    new_plan: str
-
-class GenerateImageRequest(BaseModel):
-    user_id: str
+class ImageRequest(UserRequest):
     prompt: str
 
-class GenerateImageResponse(BaseModel):
-    image_url: str
-    remaining_images: int
-    subscription_tier: str
-
-class ErrorResponse(BaseModel):
-    error: str
-    message: str
-    upgrade_url: str
-
-@app.get("/", summary="Home", description="Startseite der API")
+@app.get("/")
 def home():
     return {"message": "Server läuft perfekt!"}
 
-@app.post("/check-limit", response_model=CheckLimitResponse, summary="Check Limit", description="Überprüft das Bildlimit eines Nutzers")
-async def check_limit(request: CheckLimitRequest):
-    """Überprüft das Bildlimit eines Nutzers"""
+@app.post("/check-limit")
+def check_limit(request: UserRequest):
     user_id = request.user_id
+    user_info = user_data.get(user_id, {"remaining_images": 0, "subscription_tier": "Kein Abo"})
 
-    if user_id not in user_data:
-        user_data[user_id] = {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder/Monat"}
-
-    user_info = user_data[user_id]
-
-    return CheckLimitResponse(
-        allowed=user_info["remaining_images"] > 0,
-        remaining_images=user_info["remaining_images"],
-        subscription_tier=user_info["subscription_tier"],
-        message="Du kannst noch {} Bilder generieren.".format(user_info["remaining_images"])
+    return {
+        "allowed": user_info["remaining_images"] > 0,
+        "remaining_images": user_info["remaining_images"],
+        "subscription_tier": user_info["subscription_tier"],
+        "message": "Du kannst noch {} Bilder generieren.".format(user_info["remaining_images"])
         if user_info["remaining_images"] > 0 else "Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder."
-    )
+    }
 
-@app.post("/upgrade", response_model=UpgradeResponse, summary="Handle Upgrade", description="Empfängt das Upgrade von Digistore24 über Zapier")
-async def handle_upgrade(request: UpgradeRequest):
-    """Empfängt das Upgrade von Digistore24 über Zapier"""
-    user_id = request.user_id
-    new_plan = request.new_plan
-    payment_status = request.payment_status
-
-    if payment_status == "completed":
-        user_data[user_id] = {"remaining_images": subscription_limits.get(new_plan, 0), "subscription_tier": new_plan}
-        return UpgradeResponse(status="Upgrade successful", new_plan=new_plan)
-    
-    return UpgradeResponse(status="Payment not completed", new_plan="")
-
-@app.post("/generate-image", response_model=GenerateImageResponse, summary="Generate Image", description="Generiert ein Bild für den Nutzer")
-async def generate_image(request: GenerateImageRequest):
-    """Generiert ein Bild für den Nutzer"""
+@app.post("/generate-image")
+def generate_image(request: ImageRequest):
     user_id = request.user_id
     prompt = request.prompt
 
     if user_id not in user_data:
-        return ErrorResponse(
-            error="User not found",
-            message="Bitte registriere dich zuerst.",
-            upgrade_url=UPGRADE_URL
-        )
+        raise HTTPException(status_code=404, detail="User nicht gefunden")
 
-    if user_data[user_id]["remaining_images"] <= 0:
-       return {
-    "image_url": None,  # Muss existieren, auch wenn kein Bild generiert wurde
-    "remaining_images": 0,  # Zeigt an, dass das Limit aufgebraucht ist
-    "subscription_tier": user_info["subscription_tier"],  # Nutzerstufe bleibt gleich
-    "error": "Dein Limit ist erreicht!",
-    "message": "Upgrade dein Abo für mehr Bilder.",
-    "upgrade_url": UPGRADE_URL
-}
+    user_info = user_data[user_id]
+    
+    if user_info["remaining_images"] <= 0:
+        return {
+            "error": "Limit erreicht",
+            "message": "Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder.",
+            "upgrade_url": UPGRADE_URL,
+            "next_tier": "Pro 50 Bilder/Monat",
+            "subscription_tier": user_info["subscription_tier"]
+        }
 
-        )
-
-    # 📌 Reduziere das Bildlimit um 1
-    user_data[user_id]["remaining_images"] -= 1
-
-    # 📌 Simulierte Bildgenerierung
+    # Simulierte Bildgenerierung
     image_url = f"https://fakeimageapi.com/generate/{prompt.replace(' ', '_')}.png"
 
-    return GenerateImageResponse(
-        image_url=image_url,
-        remaining_images=user_data[user_id]["remaining_images"],
-        subscription_tier=user_data[user_id]["subscription_tier"]
-    )
+    # Nutzer-Limit reduzieren
+    user_data[user_id]["remaining_images"] -= 1
+
+    return {
+        "image_url": image_url,
+        "remaining_images": user_data[user_id]["remaining_images"],
+        "subscription_tier": user_data[user_id]["subscription_tier"]
+    }
+
+@app.post("/upgrade")
+def upgrade_subscription(request: UserRequest):
+    user_id = request.user_id
+    if user_id not in user_data:
+        raise HTTPException(status_code=404, detail="User nicht gefunden")
+
+    # Upgrade auf die nächste Stufe simulieren
+    user_data[user_id]["remaining_images"] = subscription_limits["Pro 50 Bilder/Monat"]
+    user_data[user_id]["subscription_tier"] = "Pro 50 Bilder/Monat"
+
+    return {
+        "message": "Upgrade erfolgreich!",
+        "subscription_tier": user_data[user_id]["subscription_tier"]
+    }
