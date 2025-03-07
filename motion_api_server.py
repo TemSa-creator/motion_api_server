@@ -132,3 +132,30 @@ def check_limit():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
+from fastapi import FastAPI, Request
+import requests
+
+app = FastAPI()
+
+# Simulierte User-Datenbank
+user_data = {}
+
+@app.post("/upgrade")
+async def handle_upgrade(request: Request):
+    """Empfängt das Upgrade von Digistore24 über Zapier"""
+    data = await request.json()
+    
+    user_id = data.get("user_id")
+    new_plan = data.get("new_plan")
+    payment_status = data.get("payment_status")
+
+    if payment_status == "completed":
+        user_data[user_id] = {"images_generated": 0, "plan": new_plan}  # Upgrade freischalten
+        
+        # Informiere Motion über das Upgrade
+        motion_url = "http://localhost:8000/motion-upgrade"  # Falls Motion eine eigene API hat
+        requests.post(motion_url, json={"user_id": user_id, "new_plan": new_plan})
+        
+        return {"status": "Upgrade successful", "new_plan": new_plan}
+    
+    return {"status": "Payment not completed"}
