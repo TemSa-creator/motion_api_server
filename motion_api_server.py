@@ -103,10 +103,15 @@ async def generate_image(request: GenerateImageRequest):
         )
 
     if user_data[user_id]["remaining_images"] <= 0:
-        return ErrorResponse(
-            error="Limit erreicht",
-            message="Dein Limit ist erreicht! Upgrade dein Abo für mehr Bilder.",
-            upgrade_url=UPGRADE_URL
+       return {
+    "image_url": None,  # Muss existieren, auch wenn kein Bild generiert wurde
+    "remaining_images": 0,  # Zeigt an, dass das Limit aufgebraucht ist
+    "subscription_tier": user_info["subscription_tier"],  # Nutzerstufe bleibt gleich
+    "error": "Dein Limit ist erreicht!",
+    "message": "Upgrade dein Abo für mehr Bilder.",
+    "upgrade_url": UPGRADE_URL
+}
+
         )
 
     # 📌 Reduziere das Bildlimit um 1
