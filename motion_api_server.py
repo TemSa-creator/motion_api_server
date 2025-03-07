@@ -163,10 +163,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/")
-def home():
-    return {"message": "Server läuft perfekt!"}
-
-@app.get("/ping")
-def ping():
-    return {"message": "Pong!"}
+@app.post("/upgrade")
+async def upgrade():
+    return {"message": "Upgrade erfolgreich!"}
