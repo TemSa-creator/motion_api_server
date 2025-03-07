@@ -159,3 +159,14 @@ async def handle_upgrade(request: Request):
         return {"status": "Upgrade successful", "new_plan": new_plan}
     
     return {"status": "Payment not completed"}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "Server läuft perfekt!"}
+
+@app.get("/ping")
+def ping():
+    return {"message": "Pong!"}
