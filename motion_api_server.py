@@ -166,3 +166,10 @@ app = FastAPI()
 @app.post("/upgrade")
 async def upgrade():
     return {"message": "Upgrade erfolgreich!"}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "Server läuft perfekt!"}
