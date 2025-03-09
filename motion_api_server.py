@@ -1,59 +1,94 @@
+import os
+import json
+import logging
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import requests
-import gspread
-from google.oauth2.service_account import Credentials
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
+# Logging einrichten
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# API-Server starten
 app = FastAPI()
 
-# Digistore24 Upgrade-URL
-UPGRADE_URL = "https://www.checkout-ds24.com/product/599133"
+# Google Service Account Credentials über Umgebungsvariable laden
+try:
+    service_account_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+    credentials = service_account.Credentials.from_service_account_info(service_account_info)
+    logger.info("Google Service Account erfolgreich geladen.")
+except KeyError:
+    logger.error("Fehler: GOOGLE_APPLICATION_CREDENTIALS_JSON ist nicht gesetzt.")
+    raise HTTPException(status_code=500, detail="Service Account Credentials fehlen")
+except Exception as e:
+    logger.error(f"Fehler beim Laden der Google Credentials: {e}")
+    raise HTTPException(status_code=500, detail="Fehler beim Laden der Google API Credentials")
 
-# Google Sheets API Setup
-SERVICE_ACCOUNT_FILE = "service_account.json"
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+# Google Sheets API Verbindung
+def connect_to_google_sheets():
+    try:
+        service = build("sheets", "v4", credentials=credentials)
+        logger.info("Erfolgreich mit Google Sheets API verbunden.")
+        return service
+    except Exception as e:
+        logger.error(f"Google Sheets Verbindung fehlgeschlagen: {e}")
+        raise HTTPException(status_code=500, detail="Google Sheets API Fehler")
 
-credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-gc = gspread.authorize(credentials)
-
-SPREADSHEET_ID = "DEIN_SPREADSHEET_ID"
-SHEET_NAME = "Webhooks"
-sheet = gc.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
-
-# Nutzer-Datenbank (wird später durch Google Sheets ersetzt)
-user_data = {
-    "testuser123": {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder"}
-}
-
-class UserRequest(BaseModel):
-    user_id: str
+@app.get("/")
+def home():
+    return {"message": "Motion API Server ist aktiv 🚀"}
 
 @app.post("/check-limit")
-async def check_limit(request: UserRequest):
-    user_id = request.user_id
-    if user_id in user_data:
-        return user_data[user_id]
-    else:
-        raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+def check_limit(user_id: str):
+    try:
+        service = connect_to_google_sheets()
+        spreadsheet_id = "DEINE_SPREADSHEET_ID"
+        range_name = "Limits!A:B"
+
+        sheet = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        values = sheet.get("values", [])
+
+        for row in values:
+            if row[0] == user_id:
+                remaining_images = int(row[1])
+                return {"remaining_images": remaining_images}
+        
+        return {"error": "Benutzer nicht gefunden"}
+    
+    except Exception as e:
+        logger.error(f"Fehler bei /check-limit: {e}")
+        raise HTTPException(status_code=500, detail="Interner Serverfehler")
 
 @app.post("/update-limit")
-async def update_limit(request: UserRequest):
-    user_id = request.user_id
-    if user_id in user_data:
-        if user_data[user_id]["remaining_images"] > 0:
-            user_data[user_id]["remaining_images"] -= 1
-            return {"remaining_images": user_data[user_id]["remaining_images"]}
+def update_limit(user_id: str):
+    try:
+        service = connect_to_google_sheets()
+        spreadsheet_id = "https://docs.google.com/spreadsheets/d/1t6_KQJaRAFN1Xyy4lXO5CgOYAls3U5Ldd_guzyO22uY/edit?usp=sharing"
+        range_name = "Limits!A:B"
+
+        sheet = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        values = sheet.get("values", [])
+
+        updated = False
+        for i, row in enumerate(values):
+            if row[0] == user_id:
+                new_limit = max(int(row[1]) - 1, 0)
+                values[i][1] = str(new_limit)
+                updated = True
+                break
+
+        if updated:
+            body = {"values": values}
+            service.spreadsheets().values().update(
+                spreadsheetId=spreadsheet_id,
+                range=range_name,
+                valueInputOption="RAW",
+                body=body
+            ).execute()
+            return {"message": "Limit aktualisiert", "new_limit": new_limit}
         else:
-            return {"message": "Limit erreicht! Upgrade erforderlich", "upgrade_url": UPGRADE_URL}
-    else:
-        raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+            return {"error": "Benutzer nicht gefunden"}
 
-@app.post("/upgrade")
-async def upgrade_subscription(request: UserRequest):
-    user_id = request.user_id
-    user_data[user_id] = {"remaining_images": 100, "subscription_tier": "Enterprise Unbegrenzt"}
-    return {"message": "Upgrade erfolgreich!", "new_limit": 100}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    except Exception as e:
+        logger.error(f"Fehler bei /update-limit: {e}")
+        raise HTTPException(status_code=500, detail="Interner Serverfehler")
