@@ -38,8 +38,16 @@ def connect_to_google_sheets():
 def home():
     return {"message": "Motion API Server ist aktiv 🚀"}
 
+from fastapi import Body
+
 @app.post("/check-limit")
-def check_limit(user_id: str):
+def check_limit(data: dict = Body(...)):
+    user_id = data.get("user_id")
+    if not user_id:
+        return {"error": "user_id ist erforderlich"}
+    
+    # Hier muss dein Code für die Limit-Überprüfung rein
+    return {"remaining_images": 10, "subscription_tier": "Basic 10 Bilder"}
     try:
         service = connect_to_google_sheets()
         spreadsheet_id = "DEINE_SPREADSHEET_ID"
