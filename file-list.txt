@@ -1,0 +1,391 @@
+6aa721b59688a7991bd865d09fa4b5cf79d9e16e
+eae0c8c933916e43906744feaac1517bd99e2e80
+5359dfe6f9a684eba7ab650709feb699ba10c2dd
+c0b6fb4804bc978a0a27e5b22d96b6ca492d5445
+e82e9be664b835150402a362b9f9ed330274d59b
+b88feb3bce8a7ee858df5549855b4129941cb556
+47ca2d0957a3c1be6ecb00815e7a2fea9e71c5c7
+43d8d3a4bf51ec2866d85572eeff56887726cfc8
+77ad19263c11f21d6c761a0b02b9b8d05b8bdf1d
+0179c6ee112c17832debec64021a8c45849ced4e
+580ec4950834ba7c050164783bcbd9e05fe764b4
+71824f78001bf1cbd9c8ad9392d1d6f83b8c4491
+0a339cb9e3eca8711bcc10c07f347f6a30adc7b1
+6d42c7d0934d6ae85586c79b0c22e157ccc8912c
+96df2d89a7e87de8a0f84529e7fc2458d2075b7b
+0237673c38f9a3accda4db0296b128411f038545
+c760e7f119a975937960bf4f951f2460c189a5c3
+829ac467ac261a1ed63e23a77e07badebe665c36
+508d3f5078490237e9fe6eefa08df15569f4a662
+65a921e30eacfdd4cb2968ece676461446a7cd32
+b1b837d67a63af3770b4e502db47da9ce5533082
+ca89e2a07554b084aa4dd5cdc20ae6d725aa5d13
+c9115f3bb004c76efc418127065302451b8c6373
+230bd9808bbbe076be204393675550e33920cf1a
+8285e1dbc3d154bfa35d8cd5a73932b6eb1ad04f
+af230789e7213ac84082ec3d0dc3bb3f53f1a343 
+264816ddba1e0956d48fc081907915e9904450aa .gitignore
+e300caf217539b8883de04be5d2f1fd356647d0e bfg-1.15.0.jar
+e6ac1f86db59f53f4d91d949bc26ff7c093fa973 bot-api-verbindung-13d50c80f717.json
+e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 git
+e1bc312ff8ec6c1a803d17be42ffcf05b4407573 motion_api_server.py
+6aec28f33fadfcfeda3112d7432dc8f400243ff3 requirements.txt
+06535396ed7a53f840846afced545fb7edf0cc92 
+1c3a442ba8cc635027bba3178a0f1a5d0d788aee jre-8u441-windows-x64.exe
+a23919e22e99f188164518982d2615dd12203b3a openjdk-23.0.2_windows-x64_bin.zip
+886179fa9537d947a989d0a3d7feddaede1f80fc openjdk-23.0.2_windows-x64_bin
+cf931abdc35956a01e71ff26d20353015e983a88 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2
+715b7c0758a97d29ea06a8aab0fb1c147ae3493c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin
+54318bb11acc924b2671e266ac3069aefbffa22b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-console-l1-1-0.dll
+3046369f08b1b0fa1b09aa53658359917647446c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-console-l1-2-0.dll
+78a2f2bd948aeb915ac75bd11e19324d73b2ba23 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-datetime-l1-1-0.dll
+ed6526aa340564870c7379f3dfc044aebb4b3bb3 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-debug-l1-1-0.dll
+5067f3b91ae43c20659f698f744e680cd90c4743 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-errorhandling-l1-1-0.dll
+c259008b62c886df6e7445de3cdf6110ff3638e4 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-fibers-l1-1-0.dll
+aec5c21c2d3e0b1e63517fb94089f2a4ed003b14 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-file-l1-1-0.dll
+a48632835c63a786dd6ccb34622f6b936a90bfd8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-file-l1-2-0.dll
+c47477e523c51af4abb80de46fb5da855a80ae44 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-file-l2-1-0.dll
+e3457206dd32156e55bc8d7b58315f6f00dc67f5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-handle-l1-1-0.dll
+cdfbc4fb05b0650d3ab4159121d2e1f56106143e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-heap-l1-1-0.dll
+c5a6babb8ec4b5ea80a0313471028a0189a3c26a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-interlocked-l1-1-0.dll
+7ebe4032a80d279c997183a7bf13a053f17a789c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-libraryloader-l1-1-0.dll
+f14a0898d424bb1b51bfc7915a650f9af07d219d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-localization-l1-2-0.dll
+b39856d38d63353f23038cb64b406dfe7b227b2b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-memory-l1-1-0.dll
+1ab9d21af431099186cb1f69b5e16e01a19d09a4 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-namedpipe-l1-1-0.dll
+cb11888092b8c26369421a3236ed2924df60f93d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-processenvironment-l1-1-0.dll
+df5bbfc0b91d19eb71686c68d2b048ac0a66dc2f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-processthreads-l1-1-0.dll
+aebaca0add4717905e9b4aee9b72d3947109146d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-processthreads-l1-1-1.dll
+3cee241c7a4759f16e8b4210ae3121f424138e8a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-profile-l1-1-0.dll
+1f1fadf77d15baf03e916a029ebf1517a8c948d6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-rtlsupport-l1-1-0.dll
+8d4a3fb7e0989bed6b909e727034a40fbeaff4be openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-string-l1-1-0.dll
+d63157cf35032a47db35f6428b3a254f3bdaad95 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-synch-l1-1-0.dll
+055e03ce4b9fc06e1c954847bffbcda90f29913c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-synch-l1-2-0.dll
+c737b446272f9eab1c3943cef0a3e75f45e129e1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-sysinfo-l1-1-0.dll
+21f18819b3a2a53eeb069383873e2bd7b6291b8c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-timezone-l1-1-0.dll
+9248bcc4f7313c503e55eac50a57d69b43e7d8f7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-core-util-l1-1-0.dll
+67476a52387fabd9ccb1d542b86b881d1bc6ce7f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-conio-l1-1-0.dll
+3f6d6d179c7bdaa7d299afced2791b6506bfad5b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-convert-l1-1-0.dll
+18c6cf785b5112815544d4d706880afbe9ae0570 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-environment-l1-1-0.dll
+28f33248278642b49733cdcbb75306d5352bc1de openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-filesystem-l1-1-0.dll
+e68da9525a64161a6317a4b6eaaca0f117d2204e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-heap-l1-1-0.dll
+285e3cd112e17f2718f5a77af77a8558158fd091 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-locale-l1-1-0.dll
+14848fa62cb8a9ab51ba21d776279efe47dea81e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-math-l1-1-0.dll
+d4b8f9df6c86a1ec81cd31ea1f95d3153f3c9401 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-multibyte-l1-1-0.dll
+318e5247a9e2c46bf31496f51f101727002740fa openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-private-l1-1-0.dll
+e6e4272da5e54620f0e0195cafc7fe7fbb9edef9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-process-l1-1-0.dll
+ddb7286fbc1d40bd4cbeef983d21f0a74da0c8d1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-runtime-l1-1-0.dll
+eb880118984587ccaf0fe4ac659a743b8f532997 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-stdio-l1-1-0.dll
+dcf83bb4c8d1a0857be93c0eb417e7e4499bd385 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-string-l1-1-0.dll
+038e39a5e920bd5b89fdaf5190d3d04bbdb2f56a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-time-l1-1-0.dll
+47811da7e547cc3833061dca6076242d4734aac0 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/api-ms-win-crt-utility-l1-1-0.dll
+b4c9164b11893db33984f4c5d2496e8a62c6d655 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/attach.dll
+d166c363399f4908fd5633c3de0df43fbd3f2e57 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/awt.dll
+ce5d730008e05324eb059d4a489f64b32718a2b2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/dt_shmem.dll
+d57e3f8f38972c323566265aad17fd2026cc3c13 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/dt_socket.dll
+c43b67697274945e34f7587ed3ba219cd742f1bf openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/extnet.dll
+87f9b8090325a164f7e0a1de46dd2270c03b8407 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/fontmanager.dll
+5b536da196d85e50993ee426e639329213d72075 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/freetype.dll
+b53644d292faccadc93a7a249268d6654b00162a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/instrument.dll
+6f037fe9f44c0045f6501f7aa4c199620e6817ab openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/j2gss.dll
+9a4a59a78edecd6572df8d2fb9f6ddfdcaeb1b88 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/j2pcsc.dll
+dcf86b6c68ecfe483d4c74d05711008e5909a396 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/j2pkcs11.dll
+496b0a727adef1963c98a8ac31f4375100ca6276 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jaas.dll
+2e2f89c87ad8d7e2d48de2cf49fb07c3f0234f2f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jabswitch.exe
+791e238084d9ff70778a87f7395a09b957d6a27a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jaccessinspector.exe
+08c0e3915aa99b7d35023e97a405bc8e9c71e3c6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jaccesswalker.exe
+1439d6267aa82ec36c52d1777b61b41289cab7a5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jar.exe
+511ec6acd0a1bf854cb879b989f959e12ea68d03 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jarsigner.exe
+873830287133309676f34630b44ddb99aa53c0cc openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/java.dll
+36e1009f172f8b0b423a178cbe3ddac33ba16f92 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/java.exe
+da4bcad6a13970449b6fa336cb72e19e38a1118d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javaaccessbridge.dll
+dd22b29c8438703c5c85c9a8a3cdaa2375399756 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javac.exe
+6038ed5d3b944a9e74bcabc0974e1cc5a55fb212 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javadoc.exe
+2899f3532df94926ad321a3ca50438bc69003d1f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javajpeg.dll
+f35c2ec4ef330a8ee59546caf4f120fe3bf9ed42 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javap.exe
+bbe65ec13995c0f9fa20449f15d9b62cf8630264 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/javaw.exe
+76de112b5e9e11f9731a695f0a93d034e5893cae openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jawt.dll
+d3564a4bee9ebe8c50d7fe343cab8a33d0cea7e8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jcmd.exe
+f012a2df407f5c6de55742ed623eda3eed97e85b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jconsole.exe
+46047f403294d25a4cd2a58889768d83bb48f95f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jdb.exe
+17cbcbc1347c0c598a272e91db6622a8e578fac9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jdeprscan.exe
+9c1bdae67c67bb6d49543e43974eccf303927081 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jdeps.exe
+40b88ef2675615cde53769b12d22bdb5bb132b32 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jdwp.dll
+ca7abea193fab13ae8038ec853138b3f8afc322b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jfr.exe
+1aa6ed5e0ac5ff606b57dfe54e4de8a3f147b7ac openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jhsdb.exe
+6d86396289cf26f223d668044695ad45f85424d5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jimage.dll
+218409fcbde354c372244bc3d454ee6b30aad784 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jimage.exe
+5baa29f41436b53186689c4bf1313c9d57e02d6b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jinfo.exe
+8ae49087833214ac4bafaeada3e68a6d0f34c8df openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jli.dll
+cbff8a7e8a9eb171f38b76f73384c093d7435540 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jlink.exe
+65e37651608edcec0857b7706d56f704e05421d8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jmap.exe
+c80d375b62e2fa0ec66353f8111791ca3c6ba538 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jmod.exe
+1c006a0fda52f043fa078b934b7111bf96d4913c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jpackage.dll
+427d6ce1f87118ae7a17c260889c666e5ba60549 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jpackage.exe
+cbb379fc93250cab5b83ad4cf97174cdc630cb53 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jps.exe
+fd3db97488cfce45c0b012ffafb27e0704f41185 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jrunscript.exe
+0feec50a7175f04f46e7dc5caee0afb0586637bc openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jshell.exe
+ec4afec9d5d90a620d2a2b35d84a7b8512764efc openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jsound.dll
+2e105fff5c3905b70c6af4848fd44c8fd0d75fc9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jstack.exe
+50dc35065d429ab50f67bc3bd1958937d15b1795 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jstat.exe
+19798342180c219811cf6e94d1a09801a5507c6c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jstatd.exe
+3dc839f9a92f45c37e43fc70f1d70c2aca3d26db openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jsvml.dll
+e51dd399d7aef4a2ba7f158e0ace4bf1d58b3681 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/jwebserver.exe
+f045f902e6535162d535e7c81d63058bbbda024e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/keytool.exe
+38d24f51f7c494cd6513dfef4c62080dd571c5d2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/kinit.exe
+587681928412e6d33fddb49f5a8432adf29da7e5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/klist.exe
+4b4f2684adea832e74e0def741e627d52b095d0f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/ktab.exe
+fc443b577001109d19636c5ad9fc365da6f37b47 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/lcms.dll
+4a8e05cd34f5ddf96c8ede268aabc64ca1a8750c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/management.dll
+35f26151fd400a75eb06e9d97dc607141f2ce31b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/management_agent.dll
+29a35f44d9763f291222e88993963f476eaa7e57 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/management_ext.dll
+c32b4cf9afcd396efc77af638ef61fead69fc9ba openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/mlib_image.dll
+01d749d215d87ed9264150031ed359fbccaa0003 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/msvcp140.dll
+088b28baded1ba30f715fb72b58c45e6a4e6ebdc openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/net.dll
+763675c9490bba4e622869713de2c99727cb6343 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/nio.dll
+00b170f067390e69a3090a26ce1387af27028220 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/prefs.dll
+40501a5636b8563f79a7a5c7588b417180a004ef openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/rmi.dll
+5bc1aef2d3433a7ea28b1e0f3d0ca109219d458d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/rmiregistry.exe
+eb80e1beb567feadd17e7ad10404b3a7ac48d87e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/saproc.dll
+e27f7e090d8b793efccf2f201ca3075ecb14bbc7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/serialver.exe
+4ce9080624109e751e087db741513ce054a36a4f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/server
+01253a7648789533a886fde812ea7441a5b20cf1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/server/classes.jsa
+08313971a1e3c9cd81e5bc85bcc293fecee48a4b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/server/classes_nocoops.jsa
+eb4c3c0fbba821c0c838ae5e693f335e16b045c2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/server/jvm.dll
+87c51dab84ee5a2694e3f45f2d3651e8aa38db9c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/splashscreen.dll
+af28bbddb2043e25341f46b020050c7e300e18b8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/sspi_bridge.dll
+a26d2960acd85d785a1e9e1420ef41f9dfc63149 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/sunmscapi.dll
+d7358e5c07c59215811377b7495aa040d17eb77c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/syslookup.dll
+0ea3f71f0fe06461376975c848ac800d1e48ea4c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/ucrtbase.dll
+edba5485f14d5d05f97fcfbf62391e48f054894b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/vcruntime140.dll
+6091fbf06e49b8cfa9e49e2f6fbce6948e947a46 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/vcruntime140_1.dll
+28178cbaf33362fcf0f7fee634e7526684703912 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/verify.dll
+52979257049d694366b660e4f294405bbca85575 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/w2k_lsa_auth.dll
+1a31045153e09fd796ad6425b2641b9e44807597 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/windowsaccessbridge-64.dll
+24bce1b72166a59d7d20f368fb27c53e38863280 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/bin/zip.dll
+567718430d8c7e5c2a397093227ece4233d9e3d6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf
+2d6cbc951e20e5e6183d27d09606c4711fe55109 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/jaxp-strict.properties.template
+53835f637438a36c42a4b3f8b5a51118854ce7b7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/jaxp.properties
+2c11b193c13e35bf23d8cd70c477b5d926bb29ff openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/logging.properties
+22cf7aba05f1a2f24c1d898dbc7a2c9cd4754860 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/management
+a09e008fe34c565323833e38e21408628e219e20 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/management/jmxremote.access
+c98a0ad253a422f0542cbdf52443a94d96ce1ada openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/management/jmxremote.password.template
+f441e558978f9f051c4d9fcc8263fa1fe0baee76 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/management/management.properties
+eac987eaaa3596f50ce5f8b4266d39d5ccecdfb1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/net.properties
+1d3cf89924a16dcd6a7af580321946dc46749fe9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security
+88e8753dee27ead9ca1c5678371dd87931e25591 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/java.policy
+f433dda85d057fe8dc03425bdcd4e863996c1974 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/java.security
+829d15a08ccdf750f681e6887ae8033f2230d2e8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy
+fdf77d3e3a401f0d6f0be18c53f6bec7cf4b0f25 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/README.txt
+be80b80dac5344ba2e3425d42dab9c3929c458ed openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/limited
+1f389340585d2a0a2f671fa3b3c273281986071c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/limited/default_US_export.policy
+2a6d5134047c001361528e9300daab3ebc28ebb0 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/limited/default_local.policy
+9dd5b91b06d768bea47022ab61d02dcbcccff410 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/limited/exempt_local.policy
+dbfa2182870c758c77c414585542f5d9ed135360 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/unlimited
+2b907e25895d6fa4cd7bc2692cdc50db4f38adf7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/security/policy/unlimited/default_local.policy
+68309d111a6050739ccd938dd4d4b9fae3f4e36d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/conf/sound.properties
+8f83db5a4ddbc7f06b51e6c2ffd9f14fb8340706 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include
+3d1f94b284551aa23c6f316d46bd9b88e9455da6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/classfile_constants.h
+2079b0bc1b3de1b60aa8d8707e722f03be81dd1e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/jawt.h
+227a7222897dcc9f7b5e1f82a8d09550990257f8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/jdwpTransport.h
+c85da1bc67f2e86f6d86644bf28511c1a4b6adc1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/jni.h
+e32b00168c965cfbc17a7e6a03024c8b185d33ab openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/jvmti.h
+c2106d3a7dc27fc1e5de32c7d68edc8a4e0e9dbf openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/jvmticmlr.h
+693ec8791205da645949ac55f111bfd124cf57ed openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32
+7dd897f0b7fef9899d1ebd1aa7490eb61e859245 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/bridge
+3f907d5f9cdd3d4699be498b44327c127d965149 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/bridge/AccessBridgeCallbacks.h
+b2d95f64366c0ac553550b17db916d04655fd964 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/bridge/AccessBridgeCalls.h
+27c31be09a8a614c601c905547f92744e3f2ef5a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/bridge/AccessBridgePackages.h
+7d43ff82737a80aab2fdd4e1128c996020a38bc3 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/jawt_md.h
+f795421937e97d401e599849782f6ac46f8ff70f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/include/win32/jni_md.h
+6c746347a8dd22ec40f07ea6a01a75a6ecee3db5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods
+900493f8b9e9cc3478b0f2cda1dff960b4fce6aa openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.base.jmod
+7fb8a2365b2b0f6691eac658106903456a5a242a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.compiler.jmod
+e675e21b7ff10e2bbcb6215875ff24aa3db78a06 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.datatransfer.jmod
+b9b9bb5201a36a739c8e699b011c2e89ca84e469 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.desktop.jmod
+60bafbe8f398e05c210570fba2a9cc4c2e139d3f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.instrument.jmod
+c7d33fa6702e9ccf101d89f476eec0962f20804c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.logging.jmod
+8c2a07d8463a130a437f2fdf29dfa9bbb059efc6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.management.jmod
+7a9935d84b31c9a2dac9ef7a945d10e34e0b5062 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.management.rmi.jmod
+2db5925d46e23df53c499b2449589fe12f2c3cb2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.naming.jmod
+c0c137da5c6ad5617a626d5984b6f3b76b00bf37 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.net.http.jmod
+77b68211695abb1c7f025e014e9c1d7f5d58c134 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.prefs.jmod
+24e768b3804ffb68aae4274ae4e00fcac8f69d0d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.rmi.jmod
+7fcf843a69d8258a8f606e7df0cdbbf808573aa3 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.scripting.jmod
+4dd3b41ab77089de03c0c76b605c0126836ca93f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.se.jmod
+3bd33bbcb0eba817b3ea8563f88ddd0cca05941c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.security.jgss.jmod
+737c6a466b089759de77dd4c562931b95a5c178f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.security.sasl.jmod
+c36fd8651ce1c8d072992e279cb4522b095667f2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.smartcardio.jmod
+4d9a8d875a2c23031ca762c1f32ae1824d172ffb openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.sql.jmod
+55bbfe0be72c6c7aff79616757f5f8179f9d69b5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.sql.rowset.jmod
+fbc875ff33ac6d3346896e749e3f6acb7748939c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.transaction.xa.jmod
+c9831102992d07f245c7bd0b8cf7df78d8baac55 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.xml.crypto.jmod
+47a343e5af6e1baf474b7613ed282c09e2bf80d7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/java.xml.jmod
+e2403676fd39f70fbff9d47ab75687b56c0d1c89 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.accessibility.jmod
+44397b20222d901be2c1fdebc7253b7b825fc351 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.attach.jmod
+0598ce67fcfb8584447bf019f96273c59f1a82f8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.charsets.jmod
+13856b28b9cc7d4b9e31349aaa60eedd1934e17a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.compiler.jmod
+5609b0a5ee3293bb30bbe190c656c8ca2d2f8649 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.crypto.cryptoki.jmod
+230db93b906b22b1a19f3db85b55057c24b29e12 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.crypto.ec.jmod
+f75c3e8170ebda527f21cdb4ebe0fcc4d34e0baf openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.crypto.mscapi.jmod
+a29b24e65449c72d142dc21b22457d6092dbd536 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.dynalink.jmod
+dd4e91825def225c9cfdb379a82b0eff713358ba openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.editpad.jmod
+5e01853687b13812dc60bdbe2a7777d5983f0e85 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.graal.compiler.jmod
+ecd2ff96a2be8ea20757b45629e21bd3ff2550d5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.graal.compiler.management.jmod
+84a9b2f2380c39480178deb8cb208dd98a734dc8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.hotspot.agent.jmod
+e1e16483d03fcdc2cd365db43f4a46224b8f70c8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.httpserver.jmod
+ae02a68a77e6d043c8572d5f19df9fbc518f265d openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.incubator.vector.jmod
+301217de614ac27624592de1f47ad261aa72f99b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.ed.jmod
+7ce877e595a8b95ecb580b020b65a2df12d9aff0 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.jvmstat.jmod
+e8ecb09c7ec8aa41a428e4434e666d37bcae4f7b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.le.jmod
+facfd0247a0cb9079e7d3b7b3ed1012aaa7ca197 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.md.jmod
+ea3593a688b398711f3c08510c3def9d1eddb55a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.opt.jmod
+14a5a347ea7fcaf7b6e721668b9dbbdc7b264785 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.internal.vm.ci.jmod
+2b4ae977754e666764f1ab478f26ce6ac456b6d8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jartool.jmod
+90e5259518cee4fdb32760b1f88e0c541a3e2ffd openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.javadoc.jmod
+2d9753c4ee7578de5a3e26210a0a6c1cdcea3217 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jcmd.jmod
+4b2f4fe71494333bcb57e3ad5569b043bd2c438e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jconsole.jmod
+40a77a90981a5f031cdfec61ac88ccb267fe37a5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jdeps.jmod
+9fd6f09c69a5f70e5f9f0879ec9f51b9e9376fae openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jdi.jmod
+c824f5d6de1af3e7d2df027d06d3ea67f91c3b7e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jdwp.agent.jmod
+25fc194fa58c18d3dceea216557ff05ea7d3b43c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jfr.jmod
+40828ded71913a16a3626ac7bfd2ac9828abe50b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jlink.jmod
+82ba857a3ebc8378401d6585d67207d1e2abd490 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jpackage.jmod
+5f174c0e6db125b991a26e2cf2f69245eb4cc32b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jshell.jmod
+176bece001412f3b1605c7717d856f06e58d2a50 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jsobject.jmod
+6b71d1151ae93954282d2a47fb0b4109aec90fe4 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.jstatd.jmod
+ff6991575301d714a31ac3ce0658ff0139f33041 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.localedata.jmod
+27bcd9eeb7b88595ec493404ac52f4a5f0816f82 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.management.agent.jmod
+6ae5e7ab6f97e49a166895da40aa59f86966c659 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.management.jfr.jmod
+6784796676ee53532dafe339d01dc228409244b2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.management.jmod
+1327636812d4cd8fc6b8f9f145a6f64eb18a349c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.naming.dns.jmod
+75122318eac030e6e4cd493acc3b8ff918fe1e53 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.naming.rmi.jmod
+9dedad7e858bf3bbe4bff749aeb4a9490db7b9f8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.net.jmod
+276529c2ce0107656a8793773ccb1e5e8516c538 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.nio.mapmode.jmod
+80752ff53753ee11db8f61405bccdd03979da7a2 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.sctp.jmod
+814b42b088567209aca8d087c711255edf05f360 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.security.auth.jmod
+bb6e4771c315dc0421feced081e937de6e959133 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.security.jgss.jmod
+fd213df8d4c73b01c39854841de1d7a12e4c647f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.unsupported.desktop.jmod
+879cc68cd4319bfbed3f1b11770458d7e9f4d764 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.unsupported.jmod
+efedfdfbd4d40de2193b62bee643c737ad5b81fa openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.xml.dom.jmod
+30d06b2ec2cdd41cc62930ca3b14a377ac6c6b07 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/jmods/jdk.zipfs.jmod
+4b62569975a15033501e096527f792155657c5d4 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal
+9bd27336ab5c3e68414339507b675515be76bdba openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base
+ff700cd09f6ea0cc497f68169fd5c210bdaa7c2b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/ADDITIONAL_LICENSE_INFO
+429666664e9ff5029d51dc7f807e1ec9eff2dd9f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/ASSEMBLY_EXCEPTION
+8b400c7ab81b7b18baff3f81d597f5e511883134 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/LICENSE
+6d0ee2e2bb4a501ec2f8174f6b13b8883f54175c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/aes.md
+40edc652e7ccae6d68d44e7a8435ae0b268a70cb openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/asm.md
+8bc98806825f58b159b6d8b369fff17ebb420f0a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/c-libutl.md
+97331fcba9f3b30648b731e7a37aae85ed75e591 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/cldr.md
+588e88e35fbe6d902c727e61911896713b3a7daa openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/icu.md
+02481558af6542579f97323aa3cc960e08f75f6f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/public_suffix.md
+a1183acf2b0d6dbcde6fcb381c46e64269a03864 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/siphash.md
+a128f8a7b0e49ec057fbbc7d11f20d9e767d2219 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/unicode.md
+f2d954486eabe590cd0aa5b2c1c828a61bd57844 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/wepoll.md
+fcc5457bf5b6070b5321524fdf8ee117cb5457f9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.base/zlib.md
+851f14eb2683eeb8f0fcb12d66f78ec1aaf029e6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.compiler
+b62cc3ef87bed2523be5386ec99dfcdea26d5479 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.compiler/ADDITIONAL_LICENSE_INFO
+0d4cfb4052b2557010bce721a71abaa88c1e97c3 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.compiler/ASSEMBLY_EXCEPTION
+4ad9fe4011573af48ce558ad68ebef81478d8dfd openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.compiler/LICENSE
+bbd12f16284a830c99325b0c1c43f514feeb9f8f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop
+eeb9932e1377f7c063279e0f1d341177f689660e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/colorimaging.md
+0ddbe9b1136956a9f70a10d443d00bafa1cb4a01 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/freetype.md
+8b8fde8706d9289cbb0c9ce937ba6525847a9a60 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/giflib.md
+3ae73d215b046bf30e11d070ad0ba526ec10cc00 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/harfbuzz.md
+479d7a3ba90418927f6db7c19c401cd377dc6f78 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/jpeg.md
+02af4fff0005ebf29988fe7c26b6113f791476a5 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/lcms.md
+cbffed81332097b5df0373262cf567a6197f063b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/libpng.md
+cdaa1acb2930bff36dce3622b207ed8d9dc40290 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.desktop/mesa3d.md
+0d8c55bfea5b6269c61f76b380c15dc1cb63b421 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml.crypto
+768f0c7b144a4b47c899269901fa1fab3b395858 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml.crypto/santuario.md
+b0faffbba30080f9a41c02137126984dec8c891e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml
+2c673d6b1af3ef3fa6896f14e6d1e646b01aec0e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml/bcel.md
+4fe80935ed184e2fbced1752ac14cc8d2057a3cf openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml/dom.md
+bc566b7d2dbd9746f1085f1d19c70e57cb9654ca openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml/jcup.md
+3e2019063b6f41f5e0be389ff54da83faa0eddc7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml/xalan.md
+ad01181b8b4335c5b0be9e386070d9ea9d8f780c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/java.xml/xerces.md
+8c682b376d997b9b07972e43255a4528070eeb3e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.crypto.cryptoki
+08d1e3c713d923f3675bc671514994c7d9e55b6f openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.crypto.cryptoki/pkcs11cryptotoken.md
+9eb453bca8dcbe38a0da162f215c29c0ca21dff1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.crypto.cryptoki/pkcs11wrapper.md
+a9501910aecd4edc76793af143cd9f5e900537eb openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.dynalink
+309efc7cbd864a29ce63e846c6411c090f5a63a7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.dynalink/dynalink.md
+c27710e026c53320196fb10cb6b83e1bacd690ca openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.le
+5b813c0af2fafc172462cebd492a8e77c32f6bd6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.le/jline.md
+4adf0e026cd49d569f09acae1b44d5ab51bff1cd openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.md
+1fd2d7eb01b1e4431d2893bf6e6a81f54799a554 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.md/commonmark.md
+a813acc27a9ac6720a9adacc3bc6975d79adc0c6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.opt
+c08b3b4b94c59d8dc4fb8a31e574f08e62419d04 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.internal.opt/jopt-simple.md
+f511f5c879c19672aeaf7c81dcb335e11c3b0f09 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.javadoc
+8c9e3cf3e3ae6f73bc815ba1f6e2491e2a5f8651 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.javadoc/dejavufonts.md
+a763ec6f187407cc62d9e72441be5a2de664c577 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.javadoc/jquery.md
+8bda9d7a85e8514f66523283c2417c8e720a644b openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.javadoc/jqueryUI.md
+b1e97e94752039b7c029bd4621a61fdabd1b3ad7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.localedata
+5b42e533f3ec4b6f6f5dd3b97ff8e02669569648 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.localedata/cldr.md
+f8b1133ca51d22ad995e6dd34c674f84f804461a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/legal/jdk.localedata/thaidict.md
+1c5be4d1c336e2a8031adf9680ce8186166e3ae6 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib
+b805c3846a8a91de7c63914a6a04f06b8e21c2df openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/classlist
+9b3955da71dd8fbebcc98c055403032dcce5bd32 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/ct.sym
+24d81b7b1ee936a711d74264442eb00fc87550ca openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/fontconfig.bfc
+40e40ca55af9f2a09483444bfd8c6e79d6a6ab1c openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/fontconfig.properties.src
+34863cab04bb40f19529c0896d1ddd6af9a3e142 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jawt.lib
+1124f8209c6fa658e111dcabebcdc4271d859f42 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jfr
+79aee3f334925160050eefabd06637a228a6df8a openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jfr/default.jfc
+6691638e5d41dfa5f25e3b695331a08e7ba932e7 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jfr/profile.jfc
+8905d3100bc3e6735068839a5f2489ba1af71705 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jrt-fs.jar
+97225c8fead9610efc47615e847cc20c2b3b8c19 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jvm.cfg
+71deeebe8aa080ccb3f8736d998a6b672568cf39 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/jvm.lib
+87d21634096ae5e86d71585d6d1a4e55aafb2a33 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/modules
+d17cf40d19618db82fec55e4c80fc9713d9fd7a1 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/psfont.properties.ja
+0feee66de02de98703297cbc5cead2a2152aad32 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/psfontj2d.properties
+874398a450dab9eba2d699b9fcfb08835e1b5830 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/security
+beded9ed548281d1d969681e07a87908348c9e08 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/security/blocked.certs
+c88e54f32bb39e904dcc81350c7d1be13a4b69cb openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/security/cacerts
+b9eeed5299e5f0e970800d4b9b954c7c96a92e28 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/security/default.policy
+6c4bb1aefcff983c602ef61585ec96c90bf54c68 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/security/public_suffix_list.dat
+96e7614901437f8d0725efe2f1b52840e69877e8 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/src.zip
+f5545b51a759f39a3ffd7848a93f8573b3b43438 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/tzdb.dat
+df9198b07f3ba2a6e29eec2d0cb49c3445ec901e openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/lib/tzmappings
+c3b28ec41934cae609eaf5c5919abe045858bcd9 openjdk-23.0.2_windows-x64_bin/jdk-23.0.2/release
+1d6455eedd02d927e0e1ca1ccd8f8316a1fbffd5 
+77d9535b0abaca964b3a1b8d515f6e8713402a14 
+36d193143167000569311352ceb50b51a34750fb .gitignore
+d35081b4af90a33ffbbcb7c3bcc727b7b65c61dd 
+cc01933bc2544e82d80047f0c1cb487179c7288b .gitignore
+50760cfe7884ef464f43e16e560d10e8b54480b9 
+28dfc939f45af3cc66656710a3482d3bffe7071d .gitignore
+f70965b6eddf4cb72ea5ece0945c0967242e49dd 
+1460f8a2a25e5cfa090c024371968362f172f4a1 motion_api_server.py
+238890c43cf4d24174dec004804f551fd9827e51 
+f5af379e534b1c01418480ff181961e1a015b138 
+6f75c5ef32ccbd6b58d6fe8bc29e51041817ce08 motion_api_server.py
+e1be277ac625f9df806d30d1e5551911753716f5 
+e7cec6aa1edc708d7aed1fc0169ed9533d1d8714 motion_api_server.py
+758873f333c51aeeaed993af34dfca28de9867a1 
+b6d6beb5219c30f64712207c73a6ae12bdcd064d motion_api_server.py
+750c0015e38110794c5525d1c634e0dd7aeafbce 
+b05b60864522e9a98de86c50c621c90adc525343 motion_api_server.py
+8e885cdbcd59400af083c1d65d283cbc2c3fc1ec 
+af0ddceaeee06ef58f162ed72b44260101dc8e8c motion_api_server.py
+f794101d9258d5368866865055be37b863b2da55 
+5a1cbdd4e6c6fbcb918d77dfcc5ff9b40051436f motion_api_server.py
+bef0771e8cfe1737236697cdb270a5ca234ec837 
+f1ff8686199dcd47d168c136640ac6e97d40c133 motion_api_server.py
+8833ea80f5ca71c00b3e47ad64ff3736e34842f9 
+6cea679b8559571f7015fa09405d09a699868bd4 motion_api_server.py
+8018ed2bd82688d059ac81649c81f7bb3beaeaa1 
+6611c0391d049c10c8ff27aba973997bef01f42a motion_api_server.py
+2fd01be23b1c678784fe35c968efb577176562c0 
+2904a0d94cc80e8f430de5cf6ad99f0ccdb6b9ea motion_api_server.py
+3f51ef47c71542301f387b21e5b76b2cde54d10d 
+217eda078b20141a7898c2b040e675943732a1ef motion_api_server.py
+3533203d786ca25d25886f252e05a11162dfd2af 
+68527cd6c94fe2a22f3f6fc965d8e1b3ed8252bb motion_api_server.py
+b2d35d57f33ee29ba3912e786f22cf91b4439dfe 
+1ee0544dc8e793441de31afbdaf1a5f2903c2e5a motion_api_server.py
+02f76950e986bc6b0516995c5ce14d11be5c2cf8 
+b1740c677b5a8cbdd1e8d3fa06648bf234adf624 motion_api_server.py
+433ea21c93b566ebe052f81e824f946173c5b139 
+5e7e8557b53627f73c7eb995eda53fdb53edb42e requirements.txt
+4787a6ec0f595091c805eb9a9f93b3f74067e486 
+dbf4a1f0cd78103b87fbc889ad893ece62a48079 
+ac6fc3410cd60f3b10b4f6db6ac3cc30e4677dd3 motion_api_server.py
