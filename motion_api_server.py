@@ -110,6 +110,7 @@ def update_limit(user_id: str):
             return {"message": "Limit aktualisiert", "new_limit": new_limit}
         else:
             return {"error": "Benutzer nicht gefunden"}
+            
 @app.post("/upgrade")
 async def upgrade_subscription(request: Request):
     data = await request.json()
