@@ -119,7 +119,7 @@ async def upgrade_subscription(request: Request):
         raise HTTPException(status_code=400, detail="User ID is required")
 
     # Hier muss dein Digistore-Link rein!
-    digistore_link = "https://www.digistore24.com/redir/XXXXXX"
+    digistore_link = "https://www.checkout-ds24.com/product/599133"
 
     return {"message": "Hier kannst du dein Abo upgraden:", "upgrade_link": digistore_link}
 
