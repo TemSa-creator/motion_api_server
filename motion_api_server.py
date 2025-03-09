@@ -110,6 +110,18 @@ def update_limit(user_id: str):
             return {"message": "Limit aktualisiert", "new_limit": new_limit}
         else:
             return {"error": "Benutzer nicht gefunden"}
+@app.post("/upgrade")
+async def upgrade_subscription(request: Request):
+    data = await request.json()
+    user_id = data.get("user_id")
+
+    if not user_id:
+        raise HTTPException(status_code=400, detail="User ID is required")
+
+    # Hier muss dein Digistore-Link rein!
+    digistore_link = "https://www.digistore24.com/redir/XXXXXX"
+
+    return {"message": "Hier kannst du dein Abo upgraden:", "upgrade_link": digistore_link}
 
     except Exception as e:
         logger.error(f"Fehler bei /update-limit: {e}")
