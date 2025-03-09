@@ -14,7 +14,7 @@ credentials = service_account.Credentials.from_service_account_file(
 )
 service = build("sheets", "v4", credentials=credentials)
 
-SPREADSHEET_ID = "deine_google_sheets_id"
+SPREADSHEET_ID = "1t6_KQJaRAFN1Xyy4lXO5CgOYAls3U5Ldd_guzyO22uY"
 RANGE_NAME = "Limits!A2:B100"
 
 @app.post("/check-limit")
@@ -55,4 +55,4 @@ async def upgrade_subscription(request: Request):
     if not user_id:
         raise HTTPException(status_code=400, detail="User ID is required")
 
-    return {"message": "Upgrade your plan here", "upgrade_link": "https://www.digistore24.com/product/your-product-id"}
+    return {"message": "Upgrade your plan here", "upgrade_link": "https://www.checkout-ds24.com/product/599133"}
