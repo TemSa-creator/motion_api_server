@@ -66,6 +66,19 @@ def check_limit(data: dict = Body(...)):
     except Exception as e:
         logger.error(f"Fehler bei /check-limit: {e}")
         raise HTTPException(status_code=500, detail="Interner Serverfehler")
+@app.post("/generate-image")
+async def generate_image(request: Request):
+    data = await request.json()
+    user_id = data.get("user_id")
+    prompt = data.get("prompt")
+
+    if not user_id or not prompt:
+        return JSONResponse(status_code=400, content={"error": "Missing user_id or prompt"})
+
+    # Hier sollte deine Bildgenerierungslogik sein
+    image_url = f"https://fake-image-api.com/generate?prompt={prompt}"
+
+    return {"image_url": image_url}
 
 @app.post("/update-limit")
 def update_limit(user_id: str):
