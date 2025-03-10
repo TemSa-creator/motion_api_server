@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI from fastapi import HTTPException
 from pydantic import BaseModel
 import psycopg2
 import os
