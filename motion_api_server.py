@@ -1,62 +1,65 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
+import psycopg2
 import os
-import json
-from google.oauth2.service_account import Credentials
-import gspread
-
-# Google Service Account Credentials laden
-key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "service_account.json")
-creds = Credentials.from_service_account_file(key_path, scopes=["https://www.googleapis.com/auth/spreadsheets"])
-client = gspread.authorize(creds)
-
-# Google Sheets Setup (1t6_KQJaRAFN1Xyy4lXO5CgOYAls3U5Ldd_guzyO22uY)
-SPREADSHEET_ID = "1t6_KQJaRAFN1Xyy4lXO5CgOYAls3U5Ldd_guzyO22uY"
-sheet = client.open_by_key(SPREADSHEET_ID).sheet1
 
 app = FastAPI()
 
-# Limits für Nutzer abrufen
+# Datenbankverbindung
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    DATABASE_URL = "postgresql://motion_user:gJ1ZwSkaq2gP5hxH2N9ehZfGEIXsgmVC@dpg-cv793nij1k6c73ea8up0-a.oregon-postgres.render.com/motion_db_vwh4"
+
+def get_db_connection():
+    return psycopg2.connect(DATABASE_URL, sslmode='require')
+
 @app.post("/check-limit")
-async def check_limit(request: Request):
-    data = await request.json()
-    user_id = data.get("user_id")
+async def check_limit(user_id: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    if not user_id:
-        raise HTTPException(status_code=400, detail="User ID is required")
+        # Nutzer in der Datenbank nachschauen
+        cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE user_id = %s", (user_id,))
+        result = cursor.fetchone()
 
-    records = sheet.get_all_records()
-    for record in records:
-        if record["User_ID"] == user_id:
-            used_credits = record["Used_Credits"]
-            max_credits = record["Max_Credits"]
-            subscription_active = record.get("Subscription_Active", "Nein")
+        if not result:
+            return {"error": "User nicht gefunden"}
 
-            remaining_images = max_credits - used_credits
+        used_credits, max_credits = result
 
-            if remaining_images <= 0 and subscription_active.lower() != "ja":
-                return {
-                    "message": "Limit erreicht. Bitte Upgrade durchführen.",
-                    "upgrade_url": "DEIN_DIGISTORE_UPGRADE_LINK"
-                }
+        # Prüfen, ob Limit erreicht wurde
+        if used_credits >= max_credits:
+            return {"limit_reached": True, "message": "Dein Limit ist erreicht. Upgrade erforderlich!"}
+        
+        return {"limit_reached": False, "used_credits": used_credits, "max_credits": max_credits}
 
-            return {
-                "remaining_images": remaining_images,
-                "subscription_tier": "Basic 10 Bilder" if subscription_active.lower() != "ja" else "Premium Unlimited"
-            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {"error": "Benutzer nicht gefunden"}
+    finally:
+        cursor.close()
+        conn.close()
 
-# Upgrade-Link zurückgeben
-@app.post("/upgrade")
-async def upgrade_subscription(request: Request):
-    data = await request.json()
-    user_id = data.get("user_id")
+@app.post("/add-user")
+async def add_user(user_id: str, max_credits: int = 10):
+    """Fügt einen neuen Nutzer hinzu oder aktualisiert ihn."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    if not user_id:
-        raise HTTPException(status_code=400, detail="User ID is required")
+        cursor.execute("""
+            INSERT INTO user_limits (user_id, used_credits, max_credits, subscription_active)
+            VALUES (%s, 0, %s, FALSE)
+            ON CONFLICT (user_id) DO NOTHING;
+        """, (user_id, max_credits))
 
-    return {
-        "message": "Upgrade erforderlich für mehr Bilder!",
-        "upgrade_url": "https://www.checkout-ds24.com/product/599133"
-    }
+        conn.commit()
+        return {"message": "User erfolgreich hinzugefügt", "user_id": user_id}
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
