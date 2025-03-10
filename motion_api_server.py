@@ -1,8 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
+from pydantic import BaseModel
 import psycopg2
 import os
 
-app = FastAPI()
+app = FastAPI()  # ✅ Muss GANZ OBEN im Code stehen!
 
 # Datenbankverbindung
 DATABASE_URL = os.getenv("DATABASE_URL")
