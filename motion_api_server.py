@@ -8,8 +8,7 @@ app = FastAPI()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    DATABASE_URL = "postgresql://motion_user:gJ1ZwSkaq2gP5hxH2N9ehZfGEIXsgmVC@dpg-cv793nij1k6c73ea8up0-a.oregon-postgres.render.com/motion_db_vwh4"
-
+    DATABASE_URL = "DATABASE_URL"
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL, sslmode='require')
 
