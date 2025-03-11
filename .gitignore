@@ -1,12 +1,32 @@
+# Sensible Dateien ignorieren
 firebase-key.json
-"service_account.json" 
-"firebase-key.json" 
-"service_account.json" 
-"firebase-key.json" 
-"bot-api-verbindung-13d50c80f717.json" 
-"service_account.json" 
-"firebase-key.json" 
+service_account.json
+bot-api-verbindung-*.json
+*.json
+
+# Verzeichnisse ignorieren
 jdk-23.0.2/
+jdk-23.0.2/lib/
+__pycache__/
 
+# PostgreSQL und pgAdmin Installer ignorieren
+pgadmin4-*.exe
+postgresql-*-windows-x64.exe
 
-"jdk-23.0.2/lib/" 
+# Virtuelle Umgebungen ignorieren
+venv/
+.env
+
+# Logs ignorieren
+*.log
+
+# Python-Cache ignorieren
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE-spezifische Dateien ignorieren
+.vscode/
+.idea/
+*.iml

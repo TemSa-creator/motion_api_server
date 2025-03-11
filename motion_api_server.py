@@ -105,4 +105,8 @@ async def upgrade_subscription(user: UpgradeRequest):
 
     finally:
         if conn:
+<<<<<<< HEAD
             conn.close()
+=======
+            conn.close()
+>>>>>>> fe1ec7e (🚀 Fehler behoben & API verbessert)
