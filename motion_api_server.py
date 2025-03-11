@@ -4,16 +4,21 @@ import psycopg2
 import os
 import json
 
-# FastAPI App starten
+# 🚀 FastAPI App starten
 app = FastAPI()
 
 # 🔧 Funktion zur Verbindung mit der Datenbank
 def get_db_connection():
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+    if not DATABASE_URL:
+        raise RuntimeError("❌ Fehler: Die Umgebungsvariable 'DATABASE_URL' ist nicht gesetzt!")
+
     try:
-        conn = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
+        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
     except Exception as e:
-        raise RuntimeError(f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler bei der Verbindung zur Datenbank: {str(e)}")
 
 # 🗂 JSON-Schema für Anfragen
 class UserRequest(BaseModel):
@@ -27,7 +32,7 @@ class UpgradeRequest(BaseModel):
     user_id: str
     new_max_credits: int
 
-# 📌 API-Endpunkt für Limit-Check
+# 📌 API-Endpunkt für Limit-Check mit automatischer Digistore-Weiterleitung
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
     conn = None
@@ -41,8 +46,18 @@ async def check_limit(user: UserRequest):
                 return {"error": "User nicht gefunden"}
 
             used_credits, max_credits = result
+            limit_reached = used_credits >= max_credits
+
+            if limit_reached:
+                return {
+                    "limit_reached": True,
+                    "used_credits": used_credits,
+                    "max_credits": max_credits,
+                    "upgrade_url": "https://www.checkout-ds24.com/product/599133"  # 🔥 Hier deinen echten Digistore-Link einsetzen!
+                }
+
             return {
-                "limit_reached": used_credits >= max_credits,
+                "limit_reached": False,
                 "used_credits": used_credits,
                 "max_credits": max_credits
             }
@@ -99,44 +114,6 @@ async def upgrade_subscription(user: UpgradeRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /upgrade: {str(e)}")
-
-    finally:
-        if conn:
-            conn.close()
-
-# 🔗 Digistore24 Webhook empfangen & verarbeiten
-@app.post("/digistore-webhook")
-async def digistore_webhook(data: dict):
-    conn = None
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            # Digistore24 Kaufdaten speichern
-            cursor.execute("""
-                INSERT INTO digistore_logs (data) VALUES (%s)
-            """, (json.dumps(data),))
-            conn.commit()
-        
-        print("✅ Digistore24 Update erhalten:", data)
-
-        # Falls das Produkt ein Abo-Upgrade ist, führe das Upgrade durch
-        if data.get("purchase") == "abo_upgrade":
-            user_id = data.get("user_id")
-            new_max_credits = 50  # Beispiel: Upgrade auf 50 Credits
-            with conn.cursor() as cursor:
-                cursor.execute("""
-                    UPDATE user_limits 
-                    SET max_credits = %s, subscription_active = TRUE 
-                    WHERE user_id = %s
-                """, (new_max_credits, user_id))
-                conn.commit()
-
-            return {"message": "Abo erfolgreich aktualisiert", "user_id": user_id, "new_max_credits": new_max_credits}
-
-        return {"message": "Webhook erfolgreich empfangen"}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"❌ Fehler in /digistore-webhook: {str(e)}")
 
     finally:
         if conn:
