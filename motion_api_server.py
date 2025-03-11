@@ -3,36 +3,27 @@ from pydantic import BaseModel
 import psycopg2
 import os
 
-app = FastAPI()  # ✅ Muss GANZ OBEN im Code stehen!
+app = FastAPI()
 
-# Datenbankverbindung
-DATABASE_URL = os.getenv("DATABASE_URL")
+# 🗂 JSON-Schema für Anfragen
+class UserRequest(BaseModel):
+    user_id: str
 
-if not DATABASE_URL:
-    DATABASE_URL = "DATABASE_URL"
-def get_db_connection():
-    return psycopg2.connect(DATABASE_URL, sslmode='require')
-
+# 📌 API-Endpunkt für Limit-Check
 @app.post("/check-limit")
-async def check_limit(user_id: str):
+async def check_limit(user: UserRequest):
     try:
-        conn = get_db_connection()
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
         cursor = conn.cursor()
 
-        # Nutzer in der Datenbank nachschauen
-        cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE user_id = %s", (user.user_id,))
         result = cursor.fetchone()
 
         if not result:
             return {"error": "User nicht gefunden"}
 
         used_credits, max_credits = result
-
-        # Prüfen, ob Limit erreicht wurde
-        if used_credits >= max_credits:
-            return {"limit_reached": True, "message": "Dein Limit ist erreicht. Upgrade erforderlich!"}
-        
-        return {"limit_reached": False, "used_credits": used_credits, "max_credits": max_credits}
+        return {"limit_reached": used_credits >= max_credits, "used_credits": used_credits, "max_credits": max_credits}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
