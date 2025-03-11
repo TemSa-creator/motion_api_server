@@ -5,18 +5,17 @@ import os
 
 app = FastAPI()
 
-# ✅ Sichere Verbindung zur Datenbank
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if not DATABASE_URL:
-    raise RuntimeError("❌ Fehler: DATABASE_URL ist nicht gesetzt! Bitte in Render hinterlegen.")
-
+# 🔧 Verbindung zur Datenbank
 def get_db_connection():
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        raise RuntimeError("❌ Fehler: DATABASE_URL ist nicht gesetzt! Bitte in Render hinterlegen.")
+
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode="require")  # Falls lokale DB: sslmode="disable"
+        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
+        raise RuntimeError(f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
 
 # 🗂 JSON-Schema für Anfragen
 class UserRequest(BaseModel):
@@ -41,7 +40,7 @@ async def check_limit(user: UserRequest):
             result = cursor.fetchone()
 
             if not result:
-                return {"error": "❌ User nicht gefunden"}
+                return {"error": "User nicht gefunden"}
 
             used_credits, max_credits = result
             return {
@@ -71,7 +70,7 @@ async def add_user(user: AddUserRequest):
             """, (user.user_id, user.max_credits))
             conn.commit()
 
-        return {"message": "✅ User erfolgreich hinzugefügt", "user_id": user.user_id}
+        return {"message": "User erfolgreich hinzugefügt", "user_id": user.user_id}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /add-user: {str(e)}")
@@ -95,7 +94,7 @@ async def upgrade_subscription(user: UpgradeRequest):
             conn.commit()
 
         return {
-            "message": "✅ Abo erfolgreich aktualisiert",
+            "message": "Abo erfolgreich aktualisiert",
             "user_id": user.user_id,
             "new_max_credits": user.new_max_credits
         }
@@ -105,8 +104,4 @@ async def upgrade_subscription(user: UpgradeRequest):
 
     finally:
         if conn:
-<<<<<<< HEAD
             conn.close()
-=======
-            conn.close()
->>>>>>> fe1ec7e (🚀 Fehler behoben & API verbessert)
