@@ -2,15 +2,14 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import psycopg2
 import os
-import json
 
-# 🚀 FastAPI App starten
+# FastAPI App starten
 app = FastAPI()
 
 # 🔧 Funktion zur Verbindung mit der Datenbank
 def get_db_connection():
     DATABASE_URL = os.getenv("DATABASE_URL")
-
+    
     if not DATABASE_URL:
         raise RuntimeError("❌ Fehler: Die Umgebungsvariable 'DATABASE_URL' ist nicht gesetzt!")
 
@@ -32,7 +31,7 @@ class UpgradeRequest(BaseModel):
     user_id: str
     new_max_credits: int
 
-# 📌 API-Endpunkt für Limit-Check mit automatischer Digistore-Weiterleitung
+# 📌 API-Endpunkt für Limit-Check
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
     conn = None
@@ -48,12 +47,15 @@ async def check_limit(user: UserRequest):
             used_credits, max_credits = result
             limit_reached = used_credits >= max_credits
 
+            # 🔥 Falls das Limit erreicht ist, Upgrade-Link zurückgeben!
             if limit_reached:
+                upgrade_link = "https://www.checkout-ds24.com/product/599133"  # 
                 return {
                     "limit_reached": True,
                     "used_credits": used_credits,
                     "max_credits": max_credits,
-                    "upgrade_url": "https://www.checkout-ds24.com/product/599133"  # 🔥 Hier deinen echten Digistore-Link einsetzen!
+                    "message": "⚠️ Limit erreicht! Bitte upgraden, um weiterzumachen.",
+                    "upgrade_url": upgrade_link
                 }
 
             return {
