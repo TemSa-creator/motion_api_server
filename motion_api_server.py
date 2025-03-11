@@ -2,17 +2,15 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import psycopg2
 import os
+import json
 
+# FastAPI App starten
 app = FastAPI()
 
-# 🔧 Verbindung zur Datenbank
+# 🔧 Funktion zur Verbindung mit der Datenbank
 def get_db_connection():
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    if not DATABASE_URL:
-        raise RuntimeError("❌ Fehler: DATABASE_URL ist nicht gesetzt! Bitte in Render hinterlegen.")
-
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
         return conn
     except Exception as e:
         raise RuntimeError(f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
@@ -101,6 +99,44 @@ async def upgrade_subscription(user: UpgradeRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /upgrade: {str(e)}")
+
+    finally:
+        if conn:
+            conn.close()
+
+# 🔗 Digistore24 Webhook empfangen & verarbeiten
+@app.post("/digistore-webhook")
+async def digistore_webhook(data: dict):
+    conn = None
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Digistore24 Kaufdaten speichern
+            cursor.execute("""
+                INSERT INTO digistore_logs (data) VALUES (%s)
+            """, (json.dumps(data),))
+            conn.commit()
+        
+        print("✅ Digistore24 Update erhalten:", data)
+
+        # Falls das Produkt ein Abo-Upgrade ist, führe das Upgrade durch
+        if data.get("purchase") == "abo_upgrade":
+            user_id = data.get("user_id")
+            new_max_credits = 50  # Beispiel: Upgrade auf 50 Credits
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE user_limits 
+                    SET max_credits = %s, subscription_active = TRUE 
+                    WHERE user_id = %s
+                """, (new_max_credits, user_id))
+                conn.commit()
+
+            return {"message": "Abo erfolgreich aktualisiert", "user_id": user_id, "new_max_credits": new_max_credits}
+
+        return {"message": "Webhook erfolgreich empfangen"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"❌ Fehler in /digistore-webhook: {str(e)}")
 
     finally:
         if conn:
