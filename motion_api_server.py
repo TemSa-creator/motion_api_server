@@ -5,13 +5,18 @@ import os
 
 app = FastAPI()
 
-# 🔧 Funktion zur Verbindung mit der Datenbank
+# ✅ Sichere Verbindung zur Datenbank
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("❌ Fehler: DATABASE_URL ist nicht gesetzt! Bitte in Render hinterlegen.")
+
 def get_db_connection():
     try:
-        conn = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
+        conn = psycopg2.connect(DATABASE_URL, sslmode="require")  # Falls lokale DB: sslmode="disable"
         return conn
     except Exception as e:
-        raise RuntimeError(f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"❌ Fehler bei der Verbindung zur Datenbank: {str(e)}")
 
 # 🗂 JSON-Schema für Anfragen
 class UserRequest(BaseModel):
@@ -36,7 +41,7 @@ async def check_limit(user: UserRequest):
             result = cursor.fetchone()
 
             if not result:
-                return {"error": "User nicht gefunden"}
+                return {"error": "❌ User nicht gefunden"}
 
             used_credits, max_credits = result
             return {
@@ -66,7 +71,7 @@ async def add_user(user: AddUserRequest):
             """, (user.user_id, user.max_credits))
             conn.commit()
 
-        return {"message": "User erfolgreich hinzugefügt", "user_id": user.user_id}
+        return {"message": "✅ User erfolgreich hinzugefügt", "user_id": user.user_id}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /add-user: {str(e)}")
@@ -90,7 +95,7 @@ async def upgrade_subscription(user: UpgradeRequest):
             conn.commit()
 
         return {
-            "message": "Abo erfolgreich aktualisiert",
+            "message": "✅ Abo erfolgreich aktualisiert",
             "user_id": user.user_id,
             "new_max_credits": user.new_max_credits
         }
