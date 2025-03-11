@@ -2,9 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import psycopg2
 import os
+import requests
 
-# FastAPI App starten
+# ✅ FastAPI App starten
 app = FastAPI()
+
+# ✅ Webhook URL für Digistore/Zapier
+ZAPIER_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzrMFkpG1TIp0QIq60LafXPKS_esJSRl--SvV8aAUjkU4DuBllqVWgI2Cwtv9XVptb0/exec"
+
+# ✅ Digistore24 Abo-Link (DEIN LINK!)
+DIGISTORE_ABO_URL = "https://www.checkout-ds24.com/product/599133"
 
 # 🔧 Funktion zur Verbindung mit der Datenbank
 def get_db_connection():
@@ -47,15 +54,19 @@ async def check_limit(user: UserRequest):
             used_credits, max_credits = result
             limit_reached = used_credits >= max_credits
 
-            # 🔥 Falls das Limit erreicht ist, Upgrade-Link zurückgeben!
+            # 🔥 Falls Limit erreicht → Webhook für Digistore/Zapier auslösen + Digistore-Link zurückgeben
             if limit_reached:
-                upgrade_link = "https://www.checkout-ds24.com/product/599133"  # 
+                webhook_data = {"user_id": user.user_id, "status": "LIMIT_REACHED"}
+                try:
+                    requests.post(ZAPIER_WEBHOOK_URL, json=webhook_data)
+                except Exception as e:
+                    print(f"⚠️ Fehler beim Senden an Zapier: {str(e)}")
+
                 return {
                     "limit_reached": True,
                     "used_credits": used_credits,
                     "max_credits": max_credits,
-                    "message": "⚠️ Limit erreicht! Bitte upgraden, um weiterzumachen.",
-                    "upgrade_url": upgrade_link
+                    "upgrade_url": DIGISTORE_ABO_URL  # ✅ Dein Abo-Link wird zurückgegeben
                 }
 
             return {
