@@ -9,9 +9,6 @@ import requests
 app = FastAPI()
 
 # ✅ Webhook URL für Digistore/Zapier
-ZAPIIER_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzrMFkpG1TIp0QIq60LafXPKS_esJSRl--SvV8aAUjkU4DuBllqVWgI2Cwtv9XVptb0/exec"
-
-# ✅ Digistore24 Abo-Link
 DIGISTORE_ABO_URL = "https://www.checkout-ds24.com/product/599133"
 
 # ✅ Webhook für Tracking (z. B. Zapier, Google Sheets)
@@ -64,7 +61,7 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
 def is_admin(user_id):
     return user_id == ADMIN_USER_ID
 
-# 📌 API-Endpunkt für Registrierung neuer User
+# 📌 API-Endpunkt für Registrierung neuer User (10 Gratis-Bilder, KEIN Abo)
 @app.post("/register-user")
 async def register_user(request: UserRequest):
     conn = get_db_connection()
@@ -76,12 +73,19 @@ async def register_user(request: UserRequest):
             result = cursor.fetchone()
             if result:
                 return {"error": "Diese E-Mail ist bereits registriert!"}
-            cursor.execute("INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier) VALUES (%s, %s, 0, 10, FALSE, 'Basic')", (email_hash, email_hash))
+
+            # ✅ User bekommen 10 Gratis-Bilder, aber KEIN Abo!
+            cursor.execute("""
+                INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
+                VALUES (%s, %s, 0, 10, FALSE, 'Free')
+            """, (email_hash, email_hash))
             conn.commit()
-            send_tracking_webhook(email_hash, request.email, request.ip_address, "Basic")
-            return {"message": "User erfolgreich registriert", "user_id": email_hash}
+            send_tracking_webhook(email_hash, request.email, request.ip_address, "Free")
+            return {"message": "User erfolgreich registriert", "user_id": email_hash, "subscription_tier": "Free"}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /register-user: {str(e)}")
+
     finally:
         conn.close()
 
@@ -115,6 +119,37 @@ async def identify_user(request: UserRequest):
     finally:
         conn.close()
 
+# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
+@app.post("/digistore-webhook")
+async def digistore_webhook(request: dict):
+    conn = get_db_connection()
+    email_hash = generate_user_id(request.get("email"))
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
+            result = cursor.fetchone()
+            if not result:
+                return {"error": "User nicht registriert!"}
+
+            purchased_plan = request.get("product_name")
+            new_credits = 10 if purchased_plan == "Basic" else 100 if purchased_plan == "Pro" else 0
+
+            cursor.execute("""
+                UPDATE user_limits 
+                SET max_credits = %s, used_credits = 0, subscription_active = TRUE, subscription_tier = %s
+                WHERE user_id = %s
+            """, (new_credits, purchased_plan, email_hash))
+            conn.commit()
+
+        return {"message": "Abo erfolgreich aktiviert", "subscription_tier": purchased_plan, "max_credits": new_credits}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler im Digistore-Webhook: {str(e)}")
+
+    finally:
+        conn.close()
+
 # 📌 API-Endpunkt für Limit-Check
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
@@ -143,22 +178,5 @@ async def check_limit(user: UserRequest):
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
-    finally:
-        conn.close()
-
-# 📌 API-Endpunkt für Upgrade
-@app.post("/upgrade")
-async def upgrade_subscription(user: UserRequest):
-    conn = get_db_connection()
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("UPDATE user_limits SET subscription_tier = %s WHERE user_id = %s", (user.new_plan, user.user_id))
-            conn.commit()
-        return {
-            "message": "Upgrade erfolgreich",
-            "subscription_tier": user.new_plan
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /upgrade: {str(e)}")
     finally:
         conn.close()
