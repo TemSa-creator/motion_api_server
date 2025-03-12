@@ -89,20 +89,29 @@ async def register_user(request: UserRequest):
 @app.post("/identify-user")
 async def identify_user(request: UserRequest):
     conn = get_db_connection()
+    
     email_hash = generate_user_id(request.email) if request.email else None
+    ip_hash = anonymize_ip(request.ip_address) if request.ip_address else None
     openai_id = request.openai_id if request.openai_id else None
 
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s OR openai_id = %s", (email_hash, openai_id))
+            cursor.execute("""
+                SELECT user_id FROM user_limits 
+                WHERE email_hash = %s OR ip_hash = %s OR openai_id = %s
+            """, (email_hash, ip_hash, openai_id))
             result = cursor.fetchone()
+
             if result:
                 user_id = result[0]
                 role = "admin" if is_admin(user_id) else "user"
                 return {"user_id": user_id, "message": "User erkannt.", "role": role}
+
             return {"error": "Kein User gefunden, bitte registrieren."}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
+
     finally:
         conn.close()
 
