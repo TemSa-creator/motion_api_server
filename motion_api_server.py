@@ -121,10 +121,12 @@ async def identify_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
+# 📌 **📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)**
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
     data = await request.json()
+    print("📩 Webhook-Eingang:", data)  # **NEU: Debugging-Ausgabe**
+
     if "email" not in data or "product_name" not in data:
         return {"error": "Ungültige Webhook-Daten!"}
     
@@ -156,7 +158,7 @@ async def digistore_webhook(request: Request):
     finally:
         conn.close()
 
-# 📌 API-Endpunkt für Limit-Check
+# 📌 **API-Endpunkt für Limit-Check**
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
     if not user.user_id:
@@ -187,39 +189,5 @@ async def check_limit(user: UserRequest):
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
-    finally:
-        conn.close()
-# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
-@app.post("/digistore-webhook")
-async def digistore_webhook(request: Request):
-    data = await request.json()
-    if "email" not in data or "product_name" not in data:
-        return {"error": "Ungültige Webhook-Daten!"}
-    
-    conn = get_db_connection()
-    email_hash = generate_user_id(data.get("email"))
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
-            result = cursor.fetchone()
-            if not result:
-                return {"error": "User nicht registriert!"}
-
-            purchased_plan = data.get("product_name")
-            new_credits = 10 if purchased_plan == "Basic" else 100 if purchased_plan == "Pro" else 0
-
-            cursor.execute("""
-                UPDATE user_limits 
-                SET max_credits = %s, used_credits = 0, subscription_active = TRUE, subscription_tier = %s
-                WHERE user_id = %s
-            """, (new_credits, purchased_plan, email_hash))
-            conn.commit()
-
-        return {"message": "Abo erfolgreich aktiviert", "subscription_tier": purchased_plan, "max_credits": new_credits}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler im Digistore-Webhook: {str(e)}")
-
     finally:
         conn.close()
