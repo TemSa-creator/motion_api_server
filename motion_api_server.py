@@ -78,6 +78,25 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
+# 📌 API-Endpunkt für User-Identifikation
+@app.post("/identify-user")
+async def identify_user(request: UserRequest):
+    conn = get_db_connection()
+    email_hash = generate_user_id(request.email) if request.email else None
+    openai_id = request.openai_id if request.openai_id else None
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s OR openai_id = %s", (email_hash, openai_id))
+            result = cursor.fetchone()
+            if result:
+                return {"user_id": result[0], "message": "User erkannt."}
+            return {"error": "Kein User gefunden, bitte registrieren."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
+    finally:
+        conn.close()
+
 # 📌 API-Endpunkt für Limit-Check
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
