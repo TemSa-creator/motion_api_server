@@ -9,13 +9,16 @@ import requests
 app = FastAPI()
 
 # ✅ Webhook URL für Digistore/Zapier
-ZAPIER_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzrMFkpG1TIp0QIq60LafXPKS_esJSRl--SvV8aAUjkU4DuBllqVWgI2Cwtv9XVptb0/exec"
+ZAPIIER_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzrMFkpG1TIp0QIq60LafXPKS_esJSRl--SvV8aAUjkU4DuBllqVWgI2Cwtv9XVptb0/exec"
 
 # ✅ Digistore24 Abo-Link
 DIGISTORE_ABO_URL = "https://www.checkout-ds24.com/product/599133"
 
 # ✅ Webhook für Tracking (z. B. Zapier, Google Sheets)
 TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"  # Hier deine Webhook-URL einfügen!
+
+# ✅ Admin-User-ID (Ersteller der Bots)
+ADMIN_USER_ID = "DEINE_USER_ID"
 
 # 🔧 Funktion zur Verbindung mit der Datenbank
 def get_db_connection():
@@ -57,6 +60,10 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
+# 🛠️ Funktion zur Erkennung des Admins
+def is_admin(user_id):
+    return user_id == ADMIN_USER_ID
+
 # 📌 API-Endpunkt für Registrierung neuer User
 @app.post("/register-user")
 async def register_user(request: UserRequest):
@@ -90,7 +97,9 @@ async def identify_user(request: UserRequest):
             cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s OR openai_id = %s", (email_hash, openai_id))
             result = cursor.fetchone()
             if result:
-                return {"user_id": result[0], "message": "User erkannt."}
+                user_id = result[0]
+                role = "admin" if is_admin(user_id) else "user"
+                return {"user_id": user_id, "message": "User erkannt.", "role": role}
             return {"error": "Kein User gefunden, bitte registrieren."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
