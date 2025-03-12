@@ -8,10 +8,8 @@ import requests
 # ✅ FastAPI App starten
 app = FastAPI()
 
-# ✅ Webhook URL für Digistore/Zapier
+# ✅ Webhook URLs für Digistore und Zapier
 DIGISTORE_ABO_URL = "https://www.checkout-ds24.com/product/599133"
-
-# ✅ Webhook für Tracking (z. B. Zapier, Google Sheets)
 TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"
 
 # ✅ Admin-User-ID (Ersteller der Bots)
@@ -26,7 +24,7 @@ def get_db_connection():
         conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler bei DB-Verbindung: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"🚨 DB-Verbindungsfehler: {str(e)}")
 
 # 🗂 JSON-Schemas
 class UserRequest(BaseModel):
@@ -57,11 +55,11 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 🛠️ Funktion zur Erkennung des Admins
+# 🛠️ Admin-Check
 def is_admin(user_id):
     return user_id == ADMIN_USER_ID
 
-# 📌 API-Endpunkt für Registrierung neuer User (10 Gratis-Bilder, KEIN Abo)
+# 📌 API-Endpunkt für Registrierung neuer User
 @app.post("/register-user")
 async def register_user(request: UserRequest):
     if not request.email:
@@ -121,11 +119,11 @@ async def identify_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
+# 📌 Digistore Webhook für Abo-Erkennung
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
     data = await request.json()
-    print("📩 Webhook-Eingang:", data)  # **NEU: Debugging-Ausgabe**
+    print("📩 Webhook-Eingang:", data)  
 
     if "email" not in data or "product_name" not in data:
         return {"error": "Ungültige Webhook-Daten!"}
@@ -158,7 +156,7 @@ async def digistore_webhook(request: Request):
     finally:
         conn.close()
 
-# 📌 **API-Endpunkt für Limit-Check**
+# 📌 Limit-Check API
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
     if not user.user_id:
