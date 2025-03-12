@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 import psycopg2
 import os
@@ -124,12 +124,13 @@ async def identify_user(request: UserRequest):
 
 # 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
 @app.post("/digistore-webhook")
-async def digistore_webhook(request: dict):
-    if "email" not in request or "product_name" not in request:
+async def digistore_webhook(request: Request):
+    data = await request.json()
+    if "email" not in data or "product_name" not in data:
         return {"error": "Ungültige Webhook-Daten!"}
     
     conn = get_db_connection()
-    email_hash = generate_user_id(request.get("email"))
+    email_hash = generate_user_id(data.get("email"))
 
     try:
         with conn.cursor() as cursor:
@@ -138,7 +139,7 @@ async def digistore_webhook(request: dict):
             if not result:
                 return {"error": "User nicht registriert!"}
 
-            purchased_plan = request.get("product_name")
+            purchased_plan = data.get("product_name")
             new_credits = 10 if purchased_plan == "Basic" else 100 if purchased_plan == "Pro" else 0
 
             cursor.execute("""
