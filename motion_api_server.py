@@ -34,6 +34,16 @@ class UserRequest(BaseModel):
     openai_id: str = None
     new_plan: str = None
 
+# 🔄 Funktion zur Umwandlung des Abos in Credits
+def get_credit_limit(plan_name):
+    credits_map = {
+        "Basic": 50,
+        "Pro": 200,
+        "Business": 500,
+        "Enterprise": 999999  # Unbegrenztes Abo
+    }
+    return credits_map.get(plan_name, 10)  # Standardwert für unbekannte Produkte
+
 # 🔒 Anonymisierung der IP-Adresse
 def anonymize_ip(ip_address):
     return hashlib.sha256(ip_address.encode()).hexdigest()
@@ -89,37 +99,7 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 API-Endpunkt für User-Identifikation
-@app.post("/identify-user")
-async def identify_user(request: UserRequest):
-    conn = get_db_connection()
-    
-    email_hash = generate_user_id(request.email) if request.email else None
-    ip_hash = anonymize_ip(request.ip_address) if request.ip_address else None
-    openai_id = request.openai_id if request.openai_id else None
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT user_id, subscription_tier FROM user_limits 
-                WHERE email_hash = %s OR ip_hash = %s OR openai_id = %s
-            """, (email_hash, ip_hash, openai_id))
-            result = cursor.fetchone()
-
-            if result:
-                user_id, subscription_tier = result
-                role = "admin" if is_admin(user_id) else "user"
-                return {"user_id": user_id, "message": "User erkannt.", "role": role, "subscription_tier": subscription_tier}
-
-            return {"error": "Kein User gefunden, bitte registrieren."}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
-
-    finally:
-        conn.close()
-
-# 📌 Digistore Webhook für Abo-Erkennung
+# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
     data = await request.json()
@@ -130,6 +110,8 @@ async def digistore_webhook(request: Request):
     
     conn = get_db_connection()
     email_hash = generate_user_id(data.get("email"))
+    purchased_plan = data.get("product_name")
+    new_credits = get_credit_limit(purchased_plan)  # Automatische Umwandlung!
 
     try:
         with conn.cursor() as cursor:
@@ -137,9 +119,6 @@ async def digistore_webhook(request: Request):
             result = cursor.fetchone()
             if not result:
                 return {"error": "User nicht registriert!"}
-
-            purchased_plan = data.get("product_name")
-            new_credits = 10 if purchased_plan == "Basic" else 100 if purchased_plan == "Pro" else 0
 
             cursor.execute("""
                 UPDATE user_limits 
