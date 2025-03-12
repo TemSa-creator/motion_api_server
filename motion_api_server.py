@@ -64,6 +64,9 @@ def is_admin(user_id):
 # 📌 API-Endpunkt für Registrierung neuer User (10 Gratis-Bilder, KEIN Abo)
 @app.post("/register-user")
 async def register_user(request: UserRequest):
+    if not request.email:
+        return {"error": "E-Mail-Adresse erforderlich!"}
+    
     conn = get_db_connection()
     email_hash = generate_user_id(request.email)
 
@@ -101,15 +104,15 @@ async def identify_user(request: UserRequest):
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT user_id FROM user_limits 
+                SELECT user_id, subscription_tier FROM user_limits 
                 WHERE email_hash = %s OR ip_hash = %s OR openai_id = %s
             """, (email_hash, ip_hash, openai_id))
             result = cursor.fetchone()
 
             if result:
-                user_id = result[0]
+                user_id, subscription_tier = result
                 role = "admin" if is_admin(user_id) else "user"
-                return {"user_id": user_id, "message": "User erkannt.", "role": role}
+                return {"user_id": user_id, "message": "User erkannt.", "role": role, "subscription_tier": subscription_tier}
 
             return {"error": "Kein User gefunden, bitte registrieren."}
 
@@ -122,6 +125,9 @@ async def identify_user(request: UserRequest):
 # 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: dict):
+    if "email" not in request or "product_name" not in request:
+        return {"error": "Ungültige Webhook-Daten!"}
+    
     conn = get_db_connection()
     email_hash = generate_user_id(request.get("email"))
 
@@ -153,6 +159,9 @@ async def digistore_webhook(request: dict):
 # 📌 API-Endpunkt für Limit-Check
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
+    if not user.user_id:
+        return {"error": "User-ID erforderlich!"}
+    
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
