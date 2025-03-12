@@ -12,7 +12,7 @@ app = FastAPI()
 DIGISTORE_ABO_URL = "https://www.checkout-ds24.com/product/599133"
 
 # ✅ Webhook für Tracking (z. B. Zapier, Google Sheets)
-TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"  # Hier deine Webhook-URL einfügen!
+TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"
 
 # ✅ Admin-User-ID (Ersteller der Bots)
 ADMIN_USER_ID = "DEINE_USER_ID"
@@ -77,7 +77,6 @@ async def register_user(request: UserRequest):
             if result:
                 return {"error": "Diese E-Mail ist bereits registriert!"}
 
-            # ✅ User bekommen 10 Gratis-Bilder, aber KEIN Abo!
             cursor.execute("""
                 INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
                 VALUES (%s, %s, 0, 10, FALSE, 'Free')
