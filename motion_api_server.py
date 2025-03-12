@@ -121,7 +121,7 @@ async def identify_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 **📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)**
+# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
     data = await request.json()
