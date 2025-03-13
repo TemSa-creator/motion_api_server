@@ -15,7 +15,7 @@ TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"
 # ✅ Admin-User-ID (Ersteller der Bots)
 ADMIN_USER_ID = "DEINE_USER_ID"
 
-# 🔧 Funktion zur Verbindung mit der Datenbank
+# 🔧 Verbindung zur Datenbank herstellen
 def get_db_connection():
     DATABASE_URL = os.getenv("DATABASE_URL")
     if not DATABASE_URL:
@@ -24,7 +24,7 @@ def get_db_connection():
         conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 DB-Verbindungsfehler: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler bei der DB-Verbindung: {str(e)}")
 
 # 🗂 JSON-Schemas
 class UserRequest(BaseModel):
@@ -34,7 +34,7 @@ class UserRequest(BaseModel):
     openai_id: str = None
     new_plan: str = None
 
-# 🔄 Funktion zur Umwandlung des Abos in Credits
+# 🔄 Abonnement in Credits umwandeln
 def get_credit_limit(plan_name):
     credits_map = {
         "Basic": 50,
@@ -42,13 +42,12 @@ def get_credit_limit(plan_name):
         "Business": 500,
         "Enterprise": 999999  # Unbegrenztes Abo
     }
-    return credits_map.get(plan_name, 10)  # Standardwert für unbekannte Produkte
+    return credits_map.get(plan_name, 10)  # Standardwert für neue oder unbekannte Nutzer
 
-# 🔒 Anonymisierung der IP-Adresse
+# 🔒 Hashing-Funktionen für Datensicherheit
 def anonymize_ip(ip_address):
     return hashlib.sha256(ip_address.encode()).hexdigest()
 
-# 🔒 Hashing der E-Mail-Adresse
 def generate_user_id(email):
     return hashlib.sha256(email.encode()).hexdigest()
 
@@ -69,7 +68,7 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
 def is_admin(user_id):
     return user_id == ADMIN_USER_ID
 
-# 📌 API-Endpunkt für Registrierung neuer User
+# 📌 **Automatische Registrierung neuer Nutzer**
 @app.post("/register-user")
 async def register_user(request: UserRequest):
     if not request.email:
@@ -83,7 +82,7 @@ async def register_user(request: UserRequest):
             cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
             result = cursor.fetchone()
             if result:
-                return {"error": "Diese E-Mail ist bereits registriert!"}
+                return {"message": "User bereits registriert", "user_id": email_hash}
 
             cursor.execute("""
                 INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
@@ -99,7 +98,7 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 API-Endpunkt für Digistore Webhook (Erkennt Abo & setzt Limit)
+# 📌 **Digistore Webhook für Abo-Erkennung & Upgrade**
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
     data = await request.json()
@@ -135,16 +134,18 @@ async def digistore_webhook(request: Request):
     finally:
         conn.close()
 
-# 📌 Limit-Check API
+# 📌 **Limit-Check API für User**
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
-    if not user.user_id:
-        return {"error": "User-ID erforderlich!"}
-    
+    if not user.user_id and not user.email:
+        return {"error": "User-ID oder E-Mail erforderlich!"}
+
     conn = get_db_connection()
+    email_hash = generate_user_id(user.email) if user.email else user.user_id
+
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT used_credits, max_credits, subscription_tier FROM user_limits WHERE user_id = %s", (user.user_id,))
+            cursor.execute("SELECT used_credits, max_credits, subscription_tier FROM user_limits WHERE user_id = %s", (email_hash,))
             result = cursor.fetchone()
             if not result:
                 return {"error": "User nicht gefunden"}
