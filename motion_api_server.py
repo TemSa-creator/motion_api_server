@@ -120,6 +120,33 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
+# 📌 **Neue Funktion: User-Identifikation**
+@app.post("/identify-user")
+async def identify_user(request: UserRequest):
+    if not request.email:
+        return {"error": "E-Mail erforderlich!"}
+
+    conn = get_db_connection()
+    email_hash = generate_user_id(request.email)
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT user_id, subscription_tier FROM user_limits WHERE email_hash = %s", (email_hash,))
+            result = cursor.fetchone()
+
+            if not result:
+                return {
+                    "error": "Kein registrierter Nutzer. Bitte registriere dich mit deiner E-Mail.",
+                    "register_url": "https://motion-api-server.onrender.com/register-user"
+                }
+
+            user_id, subscription_tier = result
+            return {"user_id": user_id, "subscription_tier": subscription_tier, "message": "User erkannt"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
+    finally:
+        conn.close()
+
 # 📌 **Abo-Erkennung durch Digistore**
 @app.post("/digistore-webhook")
 async def digistore_webhook(request: Request):
@@ -168,10 +195,7 @@ async def check_limit(user: UserRequest):
                 return {"error": "User nicht gefunden!", "register_url": "https://motion-api-server.onrender.com/register-user"}
 
             used_credits, max_credits, subscription_tier = result
-            if used_credits >= max_credits:
-                return {"allowed": False, "message": "Limit erreicht! Upgrade erforderlich.", "upgrade_url": DIGISTORE_ABO_URL}
-            
-            return {"allowed": True, "remaining_images": max_credits - used_credits, "subscription_tier": subscription_tier}
+            return {"allowed": used_credits < max_credits, "remaining_images": max_credits - used_credits, "subscription_tier": subscription_tier}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
     finally:
