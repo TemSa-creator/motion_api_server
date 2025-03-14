@@ -183,20 +183,39 @@ async def digistore_webhook(request: Request):
 # 📌 **Limit-Check API**
 @app.post("/check-limit")
 async def check_limit(user: UserRequest):
-    if not user.user_id:
-        return {"error": "User-ID erforderlich!"}
-
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
+            # Prüfe, ob eine E-Mail oder eine User-ID übergeben wurde
+            if user.email:
+                email_hash = generate_user_id(user.email)
+                cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
+                result = cursor.fetchone()
+                if result:
+                    user.user_id = result[0]  # User-ID aus der DB setzen
+
+            # Falls keine User-ID gefunden wurde, Fehler zurückgeben
+            if not user.user_id:
+                return {"error": "User nicht gefunden!", "register_url": "https://motion-api-server.onrender.com/register-user"}
+
+            # Daten des Nutzers abrufen
             cursor.execute("SELECT used_credits, max_credits, subscription_tier FROM user_limits WHERE user_id = %s", (user.user_id,))
             result = cursor.fetchone()
             if not result:
-                return {"error": "User nicht gefunden!", "register_url": "https://motion-api-server.onrender.com/register-user"}
+                return {"error": "User nicht gefunden!"}
 
             used_credits, max_credits, subscription_tier = result
-            return {"allowed": used_credits < max_credits, "remaining_images": max_credits - used_credits, "subscription_tier": subscription_tier}
+            allowed = used_credits < max_credits
+
+            return {
+                "allowed": allowed,
+                "remaining_images": max_credits - used_credits,
+                "subscription_tier": subscription_tier,
+                "message": "Limit erreicht. Upgrade erforderlich." if not allowed else "Limit nicht erreicht."
+            }
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
+
     finally:
         conn.close()
