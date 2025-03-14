@@ -120,9 +120,9 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 **Neue Funktion: User-Identifikation**
-@app.post("/identify-user")
-async def identify_user(request: UserRequest):
+# 📌 **Neue Funktion: Bild-Nutzung hochzählen**
+@app.post("/update-usage")
+async def update_usage(request: UserRequest):
     if not request.email:
         return {"error": "E-Mail erforderlich!"}
 
@@ -131,52 +131,26 @@ async def identify_user(request: UserRequest):
 
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT user_id, subscription_tier FROM user_limits WHERE email_hash = %s", (email_hash,))
-            result = cursor.fetchone()
-
-            if not result:
-                return {
-                    "error": "Kein registrierter Nutzer. Bitte registriere dich mit deiner E-Mail.",
-                    "register_url": "https://motion-api-server.onrender.com/register-user"
-                }
-
-            user_id, subscription_tier = result
-            return {"user_id": user_id, "subscription_tier": subscription_tier, "message": "User erkannt"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /identify-user: {str(e)}")
-    finally:
-        conn.close()
-
-# 📌 **Abo-Erkennung durch Digistore**
-@app.post("/digistore-webhook")
-async def digistore_webhook(request: Request):
-    data = await request.json()
-    print("📩 Webhook-Eingang:", data)
-
-    if "email" not in data or "product_name" not in data:
-        return {"error": "Ungültige Webhook-Daten!"}
-
-    conn = get_db_connection()
-    email_hash = generate_user_id(data.get("email"))
-    purchased_plan = data.get("product_name")
-    new_credits = get_credit_limit(purchased_plan)
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
+            cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE email_hash = %s", (email_hash,))
             result = cursor.fetchone()
             if not result:
                 return {"error": "User nicht registriert!"}
 
+            used_credits, max_credits = result
+            if used_credits >= max_credits:
+                return {"error": "Limit bereits erreicht! Upgrade erforderlich."}
+
             cursor.execute("""
-                UPDATE user_limits 
-                SET max_credits = %s, used_credits = 0, subscription_active = TRUE, subscription_tier = %s
-                WHERE user_id = %s
-            """, (new_credits, purchased_plan, email_hash))
+                UPDATE user_limits
+                SET used_credits = used_credits + 1
+                WHERE email_hash = %s
+            """, (email_hash,))
             conn.commit()
-        return {"message": "Abo erfolgreich aktiviert", "subscription_tier": purchased_plan, "max_credits": new_credits}
+
+        return {"message": "Nutzung erfolgreich aktualisiert."}
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler im Digistore-Webhook: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /update-usage: {str(e)}")
     finally:
         conn.close()
 
@@ -186,19 +160,16 @@ async def check_limit(user: UserRequest):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Prüfe, ob eine E-Mail oder eine User-ID übergeben wurde
             if user.email:
                 email_hash = generate_user_id(user.email)
                 cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
                 result = cursor.fetchone()
                 if result:
-                    user.user_id = result[0]  # User-ID aus der DB setzen
+                    user.user_id = result[0]  
 
-            # Falls keine User-ID gefunden wurde, Fehler zurückgeben
             if not user.user_id:
                 return {"error": "User nicht gefunden!", "register_url": "https://motion-api-server.onrender.com/register-user"}
 
-            # Daten des Nutzers abrufen
             cursor.execute("SELECT used_credits, max_credits, subscription_tier FROM user_limits WHERE user_id = %s", (user.user_id,))
             result = cursor.fetchone()
             if not result:
@@ -216,6 +187,5 @@ async def check_limit(user: UserRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
-
     finally:
         conn.close()
