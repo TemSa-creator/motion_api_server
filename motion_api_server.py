@@ -25,7 +25,8 @@ def get_db_connection():
         conn = psycopg2.connect(DATABASE_URL, password=password, sslmode="require")
         return conn
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 DB-Verbindungsfehler: {str(e)}")
+        print(f"🚨 DB-Verbindungsfehler: {str(e)}")  # Logging für Fehleranalyse
+        raise HTTPException(status_code=500, detail=f"🚨 Fehler bei der Datenbankverbindung: {str(e)}")
 
 # 🗂 JSON-Schemas für Anfragen
 class UserRequest(BaseModel):
@@ -62,7 +63,7 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 📌 **Limit-Check API mit automatischer Registrierung**
+# 📌 **Limit-Check API mit automatischer Registrierung und Debug-Logs**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
     if not request.email:
@@ -75,25 +76,38 @@ async def check_limit_before_generation(request: UserRequest):
         with conn.cursor() as cursor:
             cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE email_hash = %s", (email_hash,))
             result = cursor.fetchone()
+            
             if not result:
-                # Nutzer automatisch registrieren, falls nicht vorhanden
+                print(f"ℹ️ Nutzer {request.email} nicht in DB gefunden – wird registriert.")
                 cursor.execute("""
                     INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
                     VALUES (%s, %s, 0, 10, FALSE, 'Free')
                 """, (email_hash, email_hash))
                 conn.commit()
                 send_tracking_webhook(email_hash, request.email, request.ip_address, "Free")
-                return {"allowed": True, "remaining_images": 10, "message": "User wurde automatisch registriert."}
+                return {
+                    "allowed": True,
+                    "remaining_images": 10,
+                    "message": "User wurde automatisch registriert.",
+                    "subscription_tier": "Free"
+                }
             
             used_credits, max_credits = result
+            print(f"ℹ️ Nutzer gefunden: {request.email} hat {used_credits}/{max_credits} Credits genutzt.")
+            
             if used_credits >= max_credits:
                 return {
                     "allowed": False,
                     "message": "Limit erreicht! Upgrade erforderlich.",
                     "upgrade_url": DIGISTORE_ABO_URL
                 }
-            return {"allowed": True, "remaining_images": max_credits - used_credits}
+            return {
+                "allowed": True,
+                "remaining_images": max_credits - used_credits,
+                "subscription_tier": "Free"
+            }
     except Exception as e:
+        print(f"🚨 Fehler in /check-limit-before-generation: {str(e)}")  # Logging für Fehleranalyse
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit-before-generation: {str(e)}")
     finally:
         conn.close()
