@@ -21,7 +21,7 @@ def get_db_connection():
     if not DATABASE_URL:
         raise RuntimeError("❌ Fehler: 'DATABASE_URL' ist nicht gesetzt!")
     try:
-        password = os.getenv("DB_PASSWORD", "").strip().encode("utf-8")  # Sicherstellen, dass keine Leerzeichen oder Sonderzeichen Probleme machen
+        password = os.getenv("DB_PASSWORD", "").strip().encode("utf-8")
         conn = psycopg2.connect(DATABASE_URL, password=password, sslmode="require")
         return conn
     except Exception as e:
@@ -43,7 +43,7 @@ def get_credit_limit(plan_name):
         "Business": 500,
         "Enterprise": 999999  # Unbegrenztes Abo
     }
-    return credits_map.get(plan_name, 10)  # Standardwert für unbekannte Produkte
+    return credits_map.get(plan_name, 10)
 
 # 🔒 Hashing der E-Mail-Adresse
 def generate_user_id(email):
@@ -62,7 +62,7 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 📌 **Limit-Check API mit Upgrade-Option**
+# 📌 **Limit-Check API mit automatischer Registrierung**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
     if not request.email:
@@ -76,10 +76,15 @@ async def check_limit_before_generation(request: UserRequest):
             cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE email_hash = %s", (email_hash,))
             result = cursor.fetchone()
             if not result:
-                return {
-                    "error": "Kein registrierter Nutzer!",
-                    "register_url": "https://motion-api-server.onrender.com/register-user"
-                }
+                # Nutzer automatisch registrieren, falls nicht vorhanden
+                cursor.execute("""
+                    INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
+                    VALUES (%s, %s, 0, 10, FALSE, 'Free')
+                """, (email_hash, email_hash))
+                conn.commit()
+                send_tracking_webhook(email_hash, request.email, request.ip_address, "Free")
+                return {"allowed": True, "remaining_images": 10, "message": "User wurde automatisch registriert."}
+            
             used_credits, max_credits = result
             if used_credits >= max_credits:
                 return {
@@ -90,66 +95,5 @@ async def check_limit_before_generation(request: UserRequest):
             return {"allowed": True, "remaining_images": max_credits - used_credits}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit-before-generation: {str(e)}")
-    finally:
-        conn.close()
-
-# 📌 **Automatische Nutzerregistrierung**
-@app.post("/register-user")
-async def register_user(request: UserRequest):
-    if not request.email:
-        return {"error": "E-Mail-Adresse erforderlich!"}
-
-    conn = get_db_connection()
-    email_hash = generate_user_id(request.email)
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
-            result = cursor.fetchone()
-            if result:
-                return {"message": "User bereits registriert.", "user_id": email_hash}
-
-            cursor.execute("""
-                INSERT INTO user_limits (user_id, email_hash, used_credits, max_credits, subscription_active, subscription_tier)
-                VALUES (%s, %s, 0, 10, FALSE, 'Free')
-            """, (email_hash, email_hash))
-            conn.commit()
-            send_tracking_webhook(email_hash, request.email, request.ip_address, "Free")
-            return {"message": "User erfolgreich registriert", "user_id": email_hash, "subscription_tier": "Free"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /register-user: {str(e)}")
-    finally:
-        conn.close()
-
-# 📌 **Nutzung aktualisieren**
-@app.post("/update-usage")
-async def update_usage(request: UserRequest):
-    if not request.email:
-        return {"error": "E-Mail erforderlich!"}
-
-    conn = get_db_connection()
-    email_hash = generate_user_id(request.email)
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT used_credits, max_credits FROM user_limits WHERE email_hash = %s", (email_hash,))
-            result = cursor.fetchone()
-            if not result:
-                return {"error": "User nicht registriert!"}
-
-            used_credits, max_credits = result
-            if used_credits >= max_credits:
-                return {"error": "Limit erreicht! Upgrade erforderlich."}
-
-            cursor.execute("""
-                UPDATE user_limits
-                SET used_credits = used_credits + 1
-                WHERE email_hash = %s
-            """, (email_hash,))
-            conn.commit()
-
-        return {"message": "Nutzung erfolgreich aktualisiert."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /update-usage: {str(e)}")
     finally:
         conn.close()
