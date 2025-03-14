@@ -15,13 +15,14 @@ TRACKING_WEBHOOK_URL = "https://your-webhook-url.com"
 # ✅ Admin-User-ID (Ersteller der Bots)
 ADMIN_USER_ID = "DEINE_USER_ID"
 
-# 🔧 Verbindung zur Datenbank
+# 🔧 Verbindung zur Datenbank mit Fehlerbehandlung & Passwort-Sicherheit
 def get_db_connection():
     DATABASE_URL = os.getenv("DATABASE_URL")
     if not DATABASE_URL:
         raise RuntimeError("❌ Fehler: 'DATABASE_URL' ist nicht gesetzt!")
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        password = os.getenv("DB_PASSWORD", "").strip().encode("utf-8")  # Sicherstellen, dass keine Leerzeichen oder Sonderzeichen Probleme machen
+        conn = psycopg2.connect(DATABASE_URL, password=password, sslmode="require")
         return conn
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 DB-Verbindungsfehler: {str(e)}")
@@ -46,13 +47,13 @@ def get_credit_limit(plan_name):
 
 # 🔒 Hashing der E-Mail-Adresse
 def generate_user_id(email):
-    return hashlib.sha256(email.encode()).hexdigest()
+    return hashlib.sha256(email.strip().encode()).hexdigest()
 
 # 🔥 Tracking-Webhook senden
 def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     data = {
         "user_id": user_id,
-        "email": email,
+        "email": email.strip(),
         "ip_address": ip_address,
         "subscription_tier": subscription_tier
     }
@@ -61,11 +62,11 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 📌 **Pflicht-E-Mail für Motion-Nutzung**
+# 📌 **Limit-Check API mit Upgrade-Option**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
     if not request.email:
-        return {"error": "E-Mail erforderlich! Du musst dich mit der gleichen E-Mail registrieren, mit der du das Abo hast."}
+        return {"error": "E-Mail erforderlich!"}
 
     conn = get_db_connection()
     email_hash = generate_user_id(request.email)
@@ -76,7 +77,7 @@ async def check_limit_before_generation(request: UserRequest):
             result = cursor.fetchone()
             if not result:
                 return {
-                    "error": "Kein registrierter Nutzer! Bitte registriere dich mit deiner E-Mail.",
+                    "error": "Kein registrierter Nutzer!",
                     "register_url": "https://motion-api-server.onrender.com/register-user"
                 }
             used_credits, max_credits = result
@@ -92,7 +93,7 @@ async def check_limit_before_generation(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 **Automatische Nutzerregistrierung bei Nutzung**
+# 📌 **Automatische Nutzerregistrierung**
 @app.post("/register-user")
 async def register_user(request: UserRequest):
     if not request.email:
@@ -120,7 +121,7 @@ async def register_user(request: UserRequest):
     finally:
         conn.close()
 
-# 📌 **Neue Funktion: Bild-Nutzung hochzählen**
+# 📌 **Nutzung aktualisieren**
 @app.post("/update-usage")
 async def update_usage(request: UserRequest):
     if not request.email:
@@ -138,7 +139,7 @@ async def update_usage(request: UserRequest):
 
             used_credits, max_credits = result
             if used_credits >= max_credits:
-                return {"error": "Limit bereits erreicht! Upgrade erforderlich."}
+                return {"error": "Limit erreicht! Upgrade erforderlich."}
 
             cursor.execute("""
                 UPDATE user_limits
@@ -148,44 +149,7 @@ async def update_usage(request: UserRequest):
             conn.commit()
 
         return {"message": "Nutzung erfolgreich aktualisiert."}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"🚨 Fehler in /update-usage: {str(e)}")
-    finally:
-        conn.close()
-
-# 📌 **Limit-Check API**
-@app.post("/check-limit")
-async def check_limit(user: UserRequest):
-    conn = get_db_connection()
-    try:
-        with conn.cursor() as cursor:
-            if user.email:
-                email_hash = generate_user_id(user.email)
-                cursor.execute("SELECT user_id FROM user_limits WHERE email_hash = %s", (email_hash,))
-                result = cursor.fetchone()
-                if result:
-                    user.user_id = result[0]  
-
-            if not user.user_id:
-                return {"error": "User nicht gefunden!", "register_url": "https://motion-api-server.onrender.com/register-user"}
-
-            cursor.execute("SELECT used_credits, max_credits, subscription_tier FROM user_limits WHERE user_id = %s", (user.user_id,))
-            result = cursor.fetchone()
-            if not result:
-                return {"error": "User nicht gefunden!"}
-
-            used_credits, max_credits, subscription_tier = result
-            allowed = used_credits < max_credits
-
-            return {
-                "allowed": allowed,
-                "remaining_images": max_credits - used_credits,
-                "subscription_tier": subscription_tier,
-                "message": "Limit erreicht. Upgrade erforderlich." if not allowed else "Limit nicht erreicht."
-            }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit: {str(e)}")
     finally:
         conn.close()
