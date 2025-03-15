@@ -63,13 +63,16 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 📌 **Limit-Check API mit automatischer Registrierung und Debug-Logs**
+# 📌 **Limit-Check API mit verbesserter Logging & GPT-Response**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
     print(f"📥 Anfrage von GPT-Bot: {request.dict()}")  # <-- Loggt die Anfrage
     
     if not request.email:
-        return {"error": "E-Mail erforderlich!"}
+        return {
+            "error": "E-Mail erforderlich!",
+            "message": "Bitte registriere dich mit der E-Mail, die du für dein Abo nutzt."
+        }
 
     conn = get_db_connection()
     email_hash = generate_user_id(request.email)
@@ -90,7 +93,7 @@ async def check_limit_before_generation(request: UserRequest):
                 return {
                     "allowed": True,
                     "remaining_images": 10,
-                    "message": "User wurde automatisch registriert.",
+                    "message": "User wurde automatisch registriert und kann Bilder generieren.",
                     "subscription_tier": "Free"
                 }
             
@@ -100,13 +103,14 @@ async def check_limit_before_generation(request: UserRequest):
             if used_credits >= max_credits:
                 return {
                     "allowed": False,
-                    "message": "Limit erreicht! Upgrade erforderlich.",
+                    "message": "Limit erreicht! Bitte upgrade dein Abo, um weiter Bilder zu generieren.",
                     "upgrade_url": DIGISTORE_ABO_URL
                 }
             return {
                 "allowed": True,
                 "remaining_images": max_credits - used_credits,
-                "subscription_tier": "Free"
+                "subscription_tier": "Free",
+                "message": "Limit nicht erreicht. Du kannst weiterhin Bilder generieren."
             }
     except Exception as e:
         print(f"🚨 Fehler in /check-limit-before-generation: {str(e)}")  # Logging für Fehleranalyse
