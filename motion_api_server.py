@@ -19,14 +19,16 @@ ADMIN_USER_ID = "DEINE_USER_ID"
 def get_db_connection():
     DATABASE_URL = os.getenv("DATABASE_URL")
     if not DATABASE_URL:
-        raise RuntimeError("❌ Fehler: 'DATABASE_URL' ist nicht gesetzt!")
+        print("❌ Fehler: 'DATABASE_URL' ist nicht gesetzt!")
+        raise RuntimeError("Datenbank-URL fehlt!")
     try:
         password = os.getenv("DB_PASSWORD", "").strip().encode("utf-8")
         conn = psycopg2.connect(DATABASE_URL, password=password, sslmode="require")
+        print("✅ Datenbankverbindung erfolgreich!")
         return conn
     except Exception as e:
-        print(f"🚨 DB-Verbindungsfehler: {str(e)}")  # Logging für Fehleranalyse
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler bei der Datenbankverbindung: {str(e)}")
+        print(f"🚨 DB-Verbindungsfehler: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Fehler bei der DB-Verbindung: {str(e)}")
 
 # 🗂 JSON-Schemas für Anfragen
 class UserRequest(BaseModel):
@@ -60,19 +62,18 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
     }
     try:
         requests.post(TRACKING_WEBHOOK_URL, json=data)
+        print(f"📡 Webhook gesendet für {email}")
     except Exception as e:
         print(f"⚠️ Fehler beim Senden an Webhook: {str(e)}")
 
-# 📌 **Limit-Check API mit verbesserter Logging & GPT-Response**
+# 📌 **Limit-Check API mit erweiterter Logging-Funktion**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
-    print(f"📥 Anfrage von GPT-Bot: {request.dict()}")  # <-- Loggt die Anfrage
+    print(f"📥 Eingehende Anfrage: {request.dict()}")
     
     if not request.email:
-        return {
-            "error": "E-Mail erforderlich!",
-            "message": "Bitte registriere dich mit der E-Mail, die du für dein Abo nutzt."
-        }
+        print("❌ Fehler: Keine E-Mail übermittelt!")
+        raise HTTPException(status_code=400, detail="E-Mail erforderlich! Bitte registriere dich mit der E-Mail, die du für dein Abo nutzt.")
 
     conn = get_db_connection()
     email_hash = generate_user_id(request.email)
@@ -90,6 +91,7 @@ async def check_limit_before_generation(request: UserRequest):
                 """, (email_hash, email_hash))
                 conn.commit()
                 send_tracking_webhook(email_hash, request.email, request.ip_address, "Free")
+                print("✅ Neuer User registriert!")
                 return {
                     "allowed": True,
                     "remaining_images": 10,
@@ -101,11 +103,14 @@ async def check_limit_before_generation(request: UserRequest):
             print(f"ℹ️ Nutzer gefunden: {request.email} hat {used_credits}/{max_credits} Credits genutzt.")
             
             if used_credits >= max_credits:
+                print("❌ Limit erreicht! Zeige Upgrade-Option an.")
                 return {
                     "allowed": False,
                     "message": "Limit erreicht! Bitte upgrade dein Abo, um weiter Bilder zu generieren.",
                     "upgrade_url": DIGISTORE_ABO_URL
                 }
+            
+            print("✅ Limit nicht erreicht. Generierung erlaubt.")
             return {
                 "allowed": True,
                 "remaining_images": max_credits - used_credits,
@@ -113,7 +118,7 @@ async def check_limit_before_generation(request: UserRequest):
                 "message": "Limit nicht erreicht. Du kannst weiterhin Bilder generieren."
             }
     except Exception as e:
-        print(f"🚨 Fehler in /check-limit-before-generation: {str(e)}")  # Logging für Fehleranalyse
-        raise HTTPException(status_code=500, detail=f"🚨 Fehler in /check-limit-before-generation: {str(e)}")
+        print(f"🚨 Fehler in /check-limit-before-generation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Fehler in /check-limit-before-generation: {str(e)}")
     finally:
         conn.close()
