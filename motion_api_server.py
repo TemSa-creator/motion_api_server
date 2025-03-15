@@ -66,6 +66,8 @@ def send_tracking_webhook(user_id, email, ip_address, subscription_tier):
 # 📌 **Limit-Check API mit automatischer Registrierung und Debug-Logs**
 @app.post("/check-limit-before-generation")
 async def check_limit_before_generation(request: UserRequest):
+    print(f"📥 Anfrage von GPT-Bot: {request.dict()}")  # <-- Loggt die Anfrage
+    
     if not request.email:
         return {"error": "E-Mail erforderlich!"}
 
